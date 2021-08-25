@@ -48,7 +48,7 @@ public:
 
     bool isEqual(const CpuLaunchData &other) const;
     CnHash::AlgoVariant av() const;
-
+//raging clue
     inline constexpr static Nonce::Backend backend()            { return Nonce::CPU; }
 
     inline bool operator!=(const CpuLaunchData &other) const    { return !isEqual(other); }

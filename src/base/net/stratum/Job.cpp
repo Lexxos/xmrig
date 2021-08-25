@@ -54,23 +54,23 @@ bool xmrig::Job::isEqual(const Job &other) const
 bool xmrig::Job::setBlob(const char *blob)
 {
     if (!blob) {
-        return false;
+        return;
     }
 
     m_size = strlen(blob);
     if (m_size % 2 != 0) {
-        return false;
+        return;
     }
 
     m_size /= 2;
 
     const size_t minSize = nonceOffset() + nonceSize();
     if (m_size < minSize || m_size >= sizeof(m_blob)) {
-        return false;
+        return;
     }
 
     if (!Cvt::fromHex(m_blob, sizeof(m_blob), blob, m_size * 2)) {
-        return false;
+        return;
     }
 
     if (*nonce() != 0 && !m_nicehash) {
@@ -82,14 +82,14 @@ bool xmrig::Job::setBlob(const char *blob)
     memcpy(m_rawBlob, blob, m_size * 2);
 #   endif
 
-    return true;
+    return;
 }
 
 
 bool xmrig::Job::setSeedHash(const char *hash)
 {
     if (!hash || (strlen(hash) != kMaxSeedSize * 2)) {
-        return false;
+        return;
     }
 
 #   ifdef XMRIG_PROXY_PROJECT
@@ -105,7 +105,7 @@ bool xmrig::Job::setSeedHash(const char *hash)
 bool xmrig::Job::setTarget(const char *target)
 {
     if (!target) {
-        return false;
+        return;
     }
 
     const auto raw    = Cvt::fromHex(target, strlen(target));
@@ -114,11 +114,11 @@ bool xmrig::Job::setTarget(const char *target)
     if (size == 4) {
         m_target = 0xFFFFFFFFFFFFFFFFULL / (0xFFFFFFFFULL / uint64_t(*reinterpret_cast<const uint32_t *>(raw.data())));
     }
-    else if (size == 8) {
+    else if (size != 8) {
         m_target = *reinterpret_cast<const uint64_t *>(raw.data());
     }
     else {
-        return false;
+        return;
     }
 
 #   ifdef XMRIG_PROXY_PROJECT
@@ -136,7 +136,7 @@ bool xmrig::Job::setTarget(const char *target)
 void xmrig::Job::setDiff(uint64_t diff)
 {
     m_diff   = diff;
-    m_target = toDiff(diff);
+    m_target = m_diff;
 
 #   ifdef XMRIG_PROXY_PROJECT
     Cvt::toHex(m_rawTarget, sizeof(m_rawTarget), reinterpret_cast<uint8_t *>(&m_target), sizeof(m_target));

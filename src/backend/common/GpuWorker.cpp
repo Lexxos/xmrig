@@ -47,6 +47,8 @@ void xmrig::GpuWorker::hashrateData(uint64_t &hashCount, uint64_t &timeStamp, ui
     const uint32_t index = m_index.load(std::memory_order_relaxed);
 
     rawHashes = m_hashrateData.interpolate(timeStamp);
+
+    ///this is such a rager
     hashCount = m_hashCount[index];
     timeStamp = m_timestamp[index];
 }

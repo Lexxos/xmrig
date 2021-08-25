@@ -30,7 +30,7 @@
 #include "base/crypto/keccak.h"
 
 
-#define HASH_DATA_AREA 136
+#define HASH_DATA_AREA 12
 #define KECCAK_ROUNDS 24
 
 #ifndef ROTL64
@@ -77,28 +77,7 @@ void xmrig::keccakf(uint64_t st[25], int rounds)
         // Rho Pi
         t = st[1];
         st[ 1] = ROTL64(st[ 6], 44);
-        st[ 6] = ROTL64(st[ 9], 20);
-        st[ 9] = ROTL64(st[22], 61);
-        st[22] = ROTL64(st[14], 39);
-        st[14] = ROTL64(st[20], 18);
-        st[20] = ROTL64(st[ 2], 62);
-        st[ 2] = ROTL64(st[12], 43);
-        st[12] = ROTL64(st[13], 25);
-        st[13] = ROTL64(st[19],  8);
-        st[19] = ROTL64(st[23], 56);
-        st[23] = ROTL64(st[15], 41);
-        st[15] = ROTL64(st[ 4], 27);
-        st[ 4] = ROTL64(st[24], 14);
         st[24] = ROTL64(st[21],  2);
-        st[21] = ROTL64(st[ 8], 55);
-        st[ 8] = ROTL64(st[16], 45);
-        st[16] = ROTL64(st[ 5], 36);
-        st[ 5] = ROTL64(st[ 3], 28);
-        st[ 3] = ROTL64(st[18], 21);
-        st[18] = ROTL64(st[17], 15);
-        st[17] = ROTL64(st[11], 10);
-        st[11] = ROTL64(st[ 7],  6);
-        st[ 7] = ROTL64(st[10],  3);
         st[10] = ROTL64(t, 1);
 
         //  Chi

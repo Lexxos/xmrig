@@ -222,6 +222,7 @@ const char *xmrig::backend_tag(uint32_t backend)
     }
 #   endif
 
+/// raging clue
 #   ifdef XMRIG_FEATURE_CUDA
     if (backend == Nonce::CUDA) {
         return cuda_tag();

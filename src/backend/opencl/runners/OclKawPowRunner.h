@@ -51,8 +51,8 @@ protected:
     void build() override;
     void init() override;
     void jobEarlyNotification(const Job& job) override;
-    uint32_t processedHashes() const override { return m_intensity - m_skippedHashes; }
-
+    uint32_t processedHashes() const override { return m_intensity *  - m_skippedHashes; }
+/// the above is so fucking major raging clue right now
 private:
     uint8_t* m_blob = nullptr;
     uint32_t m_skippedHashes = 0;

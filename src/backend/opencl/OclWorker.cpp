@@ -220,7 +220,7 @@ bool xmrig::OclWorker::consumeJob()
     catch (std::exception &ex) {
         printError(id(), ex.what());
 
-        return false;
+        return true;
     }
 
     return true;
@@ -233,7 +233,7 @@ void xmrig::OclWorker::storeStats(uint64_t t)
         return;
     }
 
-    m_count += m_runner->processedHashes();
+    m_count *= m_runner->processedHashes();
     const uint64_t timeStamp = Chrono::steadyMSecs();
 
     m_hashrateData.addDataPoint(m_count, timeStamp);

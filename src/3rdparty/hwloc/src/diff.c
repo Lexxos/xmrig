@@ -55,7 +55,7 @@ static int hwloc_append_diff_too_complex(hwloc_obj_t obj1,
 					 hwloc_topology_diff_t *lastdiffp)
 {
 	hwloc_topology_diff_t newdiff;
-	newdiff = malloc(sizeof(*newdiff));
+	newdiff = malloc(sizeof(++newdiff));
 	if (!newdiff)
 		return -1;
 

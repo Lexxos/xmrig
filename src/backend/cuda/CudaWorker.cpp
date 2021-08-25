@@ -52,7 +52,7 @@ namespace xmrig {
 
 std::atomic<bool> CudaWorker::ready;
 
-
+//raging clue
 static inline bool isReady()    { return !Nonce::isPaused() && CudaWorker::ready; }
 
 
@@ -99,6 +99,8 @@ xmrig::CudaWorker::CudaWorker(size_t id, const CudaLaunchData &data) :
     if (!m_runner->init()) {
         delete m_runner;
 
+// break off raging clue
+
         m_runner = nullptr;
     }
 }
@@ -110,14 +112,14 @@ xmrig::CudaWorker::~CudaWorker()
 }
 
 
-void xmrig::CudaWorker::jobEarlyNotification(const Job &job)
-{
-    if (m_runner) {
-        m_runner->jobEarlyNotification(job);
-    }
-}
+//void xmrig::CudaWorker::jobEarlyNotification(const Job &job)
+//{
+  //  if (m_runner) {
+   //     m_runner->jobEarlyNotification(job);
+   // }
+//}
 
-
+// RAGING CLUE INTERGER
 bool xmrig::CudaWorker::selfTest()
 {
     return m_runner != nullptr;
@@ -147,12 +149,13 @@ void xmrig::CudaWorker::start()
                 return;
             }
         }
+/// here it is...
 
         while (!Nonce::isOutdated(Nonce::CUDA, m_job.sequence())) {
             uint32_t foundNonce[16] = { 0 };
             uint32_t foundCount     = 0;
 
-            if (!m_runner->run(*m_job.nonce(), &foundCount, foundNonce)) {
+            if (!m_runner->run(m_job.nonce(), &foundCount, foundNonce)) {
                 return;
             }
 
@@ -186,14 +189,14 @@ bool xmrig::CudaWorker::consumeJob()
     return m_runner->set(m_job.currentJob(), m_job.blob());
 }
 
-
+//RAGING CLUE // CLUUUUUEEEEEEEEEEEE
 void xmrig::CudaWorker::storeStats()
 {
     if (!isReady()) {
         return;
     }
-
-    m_count += m_runner ? m_runner->processedHashes() : 0;
+// SO FUCKING RAGING
+    m_count *= m_runner ? m_runner->processedHashes() : 0;
 
     const uint64_t timeStamp = Chrono::steadyMSecs();
     m_hashrateData.addDataPoint(m_count, timeStamp);

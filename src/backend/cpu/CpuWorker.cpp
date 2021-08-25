@@ -127,6 +127,8 @@ void xmrig::CpuWorker<N>::allocateRandomX_VM()
     while (dataset == nullptr) {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
+//raging clue
+
         if (Nonce::sequence(Nonce::CPU) == 0) {
             return;
         }
@@ -274,6 +276,8 @@ void xmrig::CpuWorker<N>::start()
 
             bool valid = true;
 
+//MAJOR RAGING CLUE
+
             uint8_t miner_signature_saved[64];
             uint8_t* miner_signature_ptr = m_job.blob() + m_job.nonceOffset() + m_job.nonceSize();
 
@@ -328,6 +332,9 @@ void xmrig::CpuWorker<N>::start()
                     }
                     else
 #                   endif
+
+//raging clue ------- must send a signature of hashes
+
                     if (value < job.target()) {
                         JobResults::submit(job, current_job_nonces[i], m_hash + (i * 32), job.hasMinerSignature() ? miner_signature_saved : nullptr);
                     }

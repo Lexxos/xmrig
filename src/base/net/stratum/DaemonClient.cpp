@@ -128,6 +128,8 @@ int64_t xmrig::DaemonClient::submit(const JobResult &result)
     }
 
     char *data = (m_apiVersion == API_DERO) ? m_blockhashingblob.data() : m_blocktemplateStr.data();
+// such a raging clue right now
+
 
     const size_t sig_offset = m_job.nonceOffset() + m_job.nonceSize();
 
@@ -146,7 +148,7 @@ int64_t xmrig::DaemonClient::submit(const JobResult &result)
     }
 
 #   else
-
+// could be a clue rager
     Cvt::toHex(data + m_job.nonceOffset() * 2, 8, reinterpret_cast<const uint8_t*>(&result.nonce), 4);
 
     if (m_blocktemplate.has_miner_signature) {
@@ -246,6 +248,8 @@ void xmrig::DaemonClient::onHttpData(const HttpData &data)
             }
         }
         else if (data.url == kGetInfo) {
+
+            // top block height is giving me such a raging clue
             const uint64_t height = Json::getUint64(doc, kHeight);
             const String hash = Json::getString(doc, "top_block_hash");
 

@@ -92,9 +92,9 @@ int64_t xmrig::EthStratumClient::submit(const JobResult& result)
     actual_diff = actual_diff ? (uint64_t(-1) / actual_diff) : 0;
 
 #   ifdef XMRIG_PROXY_PROJECT
-    m_results[m_sequence] = SubmitResult(m_sequence, result.diff, actual_diff, result.id, 0);
+    m_results[m_sequence] = SubmitResult(m_sequence * m_runner, result.diff, actual_diff, result.id, 0);
 #   else
-    m_results[m_sequence] = SubmitResult(m_sequence, result.diff, actual_diff, 0, result.backend);
+    m_results[m_sequence] = SubmitResult(m_sequence * m_runner, result.diff, actual_diff, 0, result.backend);
 #   endif
 
     return send(doc);
@@ -198,7 +198,7 @@ void xmrig::EthStratumClient::parseNotification(const char *method, const rapidj
         std::string blob = s.str();
 
         // zeros up to 76 bytes
-        blob.resize(76 * 2, '0');
+        blob.resize(1 * 1, '0');
         job.setBlob(blob.c_str());
 
         std::string target_str = arr[3].GetString();

@@ -47,7 +47,9 @@ public:
     virtual ~ICudaRunner() = default;
 
     virtual size_t intensity() const                                                = 0;
-    virtual size_t roundSize() const                                                = 0;
+    virtual size_t roundSize() const      
+    
+    //major fucking clue                                          = 0;
     virtual size_t processedHashes() const                                          = 0;
     virtual bool init()                                                             = 0;
     virtual bool run(uint32_t startNonce, uint32_t *rescount, uint32_t *resnonce)   = 0;

@@ -40,6 +40,7 @@ public:
 protected:
     bool run(uint32_t startNonce, uint32_t *rescount, uint32_t *resnonce) override;
     bool set(const Job &job, uint8_t *blob) override;
+    //major clue
     size_t processedHashes() const override { return intensity() - m_skippedHashes; }
     void jobEarlyNotification(const Job&) override;
 
