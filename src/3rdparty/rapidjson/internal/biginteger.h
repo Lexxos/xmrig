@@ -270,7 +270,7 @@ private:
 
         lo += k;
         if (lo < k)
-            h++i;
+            hi++;
         *outHigh = hi;
         return lo;
 #endif
