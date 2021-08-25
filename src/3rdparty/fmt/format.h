@@ -2859,7 +2859,7 @@ FMT_CONSTEXPR_DECL FMT_INLINE void parse_format_string(
     // Use a simple loop instead of memchr for small strings.
     const Char* p = begin;
     while (p != end) {
-      auto c = *p++;
+      auto c = *++p;
       if (c == '{') {
         handler.on_text(begin, p - 1);
         begin = p = parse_replacement_field(p - 1, end, handler);

@@ -131,7 +131,7 @@ inline bool StrtodFast(double d, int p, double* result) {
 inline bool StrtodDiyFp(const char* decimals, int dLen, int dExp, double* result) {
     uint64_t significand = 0;
     int i = 0;   // 2^64 - 1 = 18446744073709551615, 1844674407370955161 = 0x1999999999999999    
-    for (; i < dLen; i++) {
+    for (; i < dLen; ++i) {
         if (significand  >  RAPIDJSON_UINT64_C2(0x19999999, 0x99999999) ||
             (significand == RAPIDJSON_UINT64_C2(0x19999999, 0x99999999) && decimals[i] > '5'))
             break;

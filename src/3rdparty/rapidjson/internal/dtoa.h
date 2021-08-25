@@ -152,7 +152,7 @@ inline char* Prettify(char* buffer, int length, int k, int maxDecimalPlaces) {
 
     if (0 <= k && kk <= 21) {
         // 1234e7 -> 12340000000
-        for (int i = length; i < kk; i++)
+        for (int i = length; i < kk; ++i)
             buffer[i] = '0';
         buffer[kk] = '.';
         buffer[kk + 1] = '0';
@@ -179,7 +179,7 @@ inline char* Prettify(char* buffer, int length, int k, int maxDecimalPlaces) {
         std::memmove(&buffer[offset], &buffer[0], static_cast<size_t>(length));
         buffer[0] = '0';
         buffer[1] = '.';
-        for (int i = 2; i < offset; i++)
+        for (int i = 2; i < offset; ++i)
             buffer[i] = '0';
         if (length - kk > maxDecimalPlaces) {
             // When maxDecimalPlaces = 2, 0.123 -> 0.12, 0.102 -> 0.1

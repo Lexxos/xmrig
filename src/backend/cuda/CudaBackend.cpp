@@ -258,7 +258,7 @@ public:
                        data.device.name().data()
                        );
 
-                    i++;
+                    ++i;
         }
 
         status.start(threads.size());
@@ -417,7 +417,7 @@ void xmrig::CudaBackend::printHashrate(bool details)
                     data.device.name().data()
                     );
 
-         i++;
+         ++i;
     }
 
     Log::print(WHITE_BOLD_S "|        - |        - | %8s | %8s | %8s |",
@@ -550,7 +550,7 @@ rapidjson::Value xmrig::CudaBackend::toJSON(rapidjson::Document &doc) const
 
         data.device.toJSON(thread, doc);
 
-        i++;
+        ++i;
         threads.PushBack(thread, allocator);
     }
 

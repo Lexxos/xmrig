@@ -903,7 +903,7 @@ private:
     template<typename InputStream>
     unsigned ParseHex4(InputStream& is, size_t escapeOffset) {
         unsigned codepoint = 0;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; ++i) {
             Ch c = is.Peek();
             codepoint <<= 4;
             codepoint += static_cast<unsigned>(c);
@@ -1071,7 +1071,7 @@ private:
                 return;
             }
             else
-                os.Put(*p++);
+                os.Put(*++p);
 
         // The rest of string using SIMD
         static const char dquote[16] = { '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"' };
@@ -1099,7 +1099,7 @@ private:
     #endif
                 if (length != 0) {
                     char* q = reinterpret_cast<char*>(os.Push(length));
-                    for (size_t i = 0; i < length; i++)
+                    for (size_t i = 0; i < length; ++i)
                         q[i] = p[i];
 
                     p += length;
@@ -1134,7 +1134,7 @@ private:
                 return;
             }
             else
-                *q++ = *p++;
+                *q++ = *++p;
 
         // The rest of string using SIMD
         static const char dquote[16] = { '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"' };
@@ -1161,7 +1161,7 @@ private:
                 length = static_cast<size_t>(__builtin_ffs(r) - 1);
 #endif
                 for (const char* pend = p + length; p != pend; )
-                    *q++ = *p++;
+                    *q++ = *++p;
                 break;
             }
             _mm_storeu_si128(reinterpret_cast<__m128i *>(q), s);
@@ -1178,7 +1178,7 @@ private:
 
         // Scan one by one until alignment (unaligned load may cross page boundary and cause crash)
         const char* nextAligned = reinterpret_cast<const char*>((reinterpret_cast<size_t>(p) + 15) & static_cast<size_t>(~15));
-        for (; p != nextAligned; p++)
+        for (; p != nextAligned; ++p)
             if (RAPIDJSON_UNLIKELY(*p == '\"') || RAPIDJSON_UNLIKELY(*p == '\\') || RAPIDJSON_UNLIKELY(static_cast<unsigned>(*p) < 0x20)) {
                 is.src_ = is.dst_ = p;
                 return;
@@ -1228,7 +1228,7 @@ private:
                 return;
             }
             else
-                os.Put(*p++);
+                os.Put(*++p);
 
         // The rest of string using SIMD
         const uint8x16_t s0 = vmovq_n_u8('"');
@@ -1263,7 +1263,7 @@ private:
             if (RAPIDJSON_UNLIKELY(escaped)) {   // some of characters is escaped
                 if (length != 0) {
                     char* q = reinterpret_cast<char*>(os.Push(length));
-                    for (size_t i = 0; i < length; i++)
+                    for (size_t i = 0; i < length; ++i)
                         q[i] = p[i];
 
                     p += length;
@@ -1298,7 +1298,7 @@ private:
                 return;
             }
             else
-                *q++ = *p++;
+                *q++ = *++p;
 
         // The rest of string using SIMD
         const uint8x16_t s0 = vmovq_n_u8('"');
@@ -1332,7 +1332,7 @@ private:
             }
             if (RAPIDJSON_UNLIKELY(escaped)) {   // some of characters is escaped
                 for (const char* pend = p + length; p != pend; ) {
-                    *q++ = *p++;
+                    *q++ = *++p;
                 }
                 break;
             }
@@ -1350,7 +1350,7 @@ private:
 
         // Scan one by one until alignment (unaligned load may cross page boundary and cause crash)
         const char* nextAligned = reinterpret_cast<const char*>((reinterpret_cast<size_t>(p) + 15) & static_cast<size_t>(~15));
-        for (; p != nextAligned; p++)
+        for (; p != nextAligned; ++p)
             if (RAPIDJSON_UNLIKELY(*p == '\"') || RAPIDJSON_UNLIKELY(*p == '\\') || RAPIDJSON_UNLIKELY(static_cast<unsigned>(*p) < 0x20)) {
                 is.src_ = is.dst_ = p;
                 return;

@@ -1426,7 +1426,7 @@ class bigint {
     for (int bigit_index = num_bigits; bigit_index < num_result_bigits;
          ++bigit_index) {
       for (int j = num_bigits - 1, i = bigit_index - j; i < num_bigits;)
-        sum += static_cast<double_bigit>(n[i++]) * n[j--];
+        sum += static_cast<double_bigit>(n[++i]) * n[j--];
       (*this)[bigit_index] = static_cast<bigit>(sum);
       sum >>= bits<bigit>::value;
     }
@@ -2569,7 +2569,7 @@ int snprintf_float(T value, int precision, float_specs specs,
     auto p = exp_pos + 2;  // Skip 'e' and sign.
     do {
       assert(is_digit(*p));
-      exp = exp * 10 + (*p++ - '0');
+      exp = exp * 10 + (*++p - '0');
     } while (p != end);
     if (sign == '-') exp = -exp;
     int fraction_size = 0;

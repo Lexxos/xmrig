@@ -569,7 +569,7 @@ static int Skein_512_Final(Skein_512_Ctxt_t *ctx, u08b_t *hashVal)
     /* run Threefish in "counter mode" to generate output */
     memset(ctx->b,0,sizeof(ctx->b));  /* zero out b[], so it can hold the counter */
     memcpy(X,ctx->X,sizeof(X));       /* keep a local copy of counter mode "key" */
-    for (i=0;i*SKEIN_512_BLOCK_BYTES < byteCnt;i++)
+    for (i=0;i*SKEIN_512_BLOCK_BYTES < byteCnt;++i)
         {
         ((u64b_t *)ctx->b)[0]= Skein_Swap64((u64b_t) i); /* build the counter block */
         Skein_Start_New_Type(ctx,OUT_FINAL);

@@ -401,7 +401,7 @@ hwloc_debug_print_objects(int indent __hwloc_attribute_unused, hwloc_obj_t obj)
 void hwloc__free_infos(struct hwloc_info_s *infos, unsigned count)
 {
   unsigned i;
-  for(i=0; i<count; i++) {
+  for(i=0; i<count; ++i) {
     free(infos[i].name);
     free(infos[i].value);
   }
@@ -445,7 +445,7 @@ int hwloc__add_info_nodup(struct hwloc_info_s **infosp, unsigned *countp,
   struct hwloc_info_s *infos = *infosp;
   unsigned count = *countp;
   unsigned i;
-  for(i=0; i<count; i++) {
+  for(i=0; i<count; ++i) {
     if (!strcmp(infos[i].name, name)) {
       if (replace) {
 	char *new = strdup(value);
@@ -478,7 +478,7 @@ int hwloc__move_infos(struct hwloc_info_s **dst_infosp, unsigned *dst_countp,
       goto drop;
     dst_infos = tmp_infos;
   }
-  for(i=0; i<src_count; i++, dst_count++) {
+  for(i=0; i<src_count; ++i, dst_count++) {
     dst_infos[dst_count].name = src_infos[i].name;
     dst_infos[dst_count].value = src_infos[i].value;
   }
@@ -491,7 +491,7 @@ int hwloc__move_infos(struct hwloc_info_s **dst_infosp, unsigned *dst_countp,
 
  drop:
   /* drop src infos, don't modify dst_infos at all */
-  for(i=0; i<src_count; i++) {
+  for(i=0; i<src_count; ++i) {
     free(src_infos[i].name);
     free(src_infos[i].value);
   }
@@ -516,7 +516,7 @@ int hwloc__tma_dup_infos(struct hwloc_tma *tma,
   newi = hwloc_tma_calloc(tma, oldc * sizeof(*newi));
   if (!newi)
     return -1;
-  for(i=0; i<oldc; i++) {
+  for(i=0; i<oldc; ++i) {
     newi[i].name = hwloc_tma_strdup(tma, oldi[i].name);
     newi[i].value = hwloc_tma_strdup(tma, oldi[i].value);
     if (!newi[i].name || !newi[i].value)
@@ -923,7 +923,7 @@ hwloc__duplicate_object(struct hwloc_topology *newtopology,
      */
     if (newobj->arity) {
       newobj->children[0]->prev_sibling = NULL;
-      for(i=1; i<newobj->arity; i++)
+      for(i=1; i<newobj->arity; ++i)
 	newobj->children[i]->prev_sibling = newobj->children[i-1];
       newobj->last_child = newobj->children[newobj->arity-1];
     }
@@ -1023,17 +1023,17 @@ hwloc__topology_dup(hwloc_topology_t *newp,
   assert(!old->machine_memory.page_types_len);
   assert(!old->machine_memory.page_types);
 
-  for(i = HWLOC_OBJ_TYPE_MIN; i < HWLOC_OBJ_TYPE_MAX; i++)
+  for(i = HWLOC_OBJ_TYPE_MIN; i < HWLOC_OBJ_TYPE_MAX; ++i)
     new->type_depth[i] = old->type_depth[i];
 
   /* duplicate levels and we'll place objects there when duplicating objects */
   new->nb_levels = old->nb_levels;
   assert(new->nb_levels_allocated >= new->nb_levels);
-  for(i=1 /* root level already allocated */ ; i<new->nb_levels; i++) {
+  for(i=1 /* root level already allocated */ ; i<new->nb_levels; ++i) {
     new->level_nbobjects[i] = old->level_nbobjects[i];
     new->levels[i] = hwloc_tma_calloc(tma, new->level_nbobjects[i] * sizeof(*new->levels[i]));
   }
-  for(i=0; i<HWLOC_NR_SLEVELS; i++) {
+  for(i=0; i<HWLOC_NR_SLEVELS; ++i) {
     new->slevels[i].nbobjs = old->slevels[i].nbobjs;
     if (new->slevels[i].nbobjs)
       new->slevels[i].objs = hwloc_tma_calloc(tma, new->slevels[i].nbobjs * sizeof(*new->slevels[i].objs));
@@ -2390,7 +2390,7 @@ static void
 hwloc_reset_normal_type_depths(hwloc_topology_t topology)
 {
   unsigned i;
-  for (i=HWLOC_OBJ_TYPE_MIN; i<=HWLOC_OBJ_GROUP; i++)
+  for (i=HWLOC_OBJ_TYPE_MIN; i<=HWLOC_OBJ_GROUP; ++i)
     topology->type_depth[i] = HWLOC_TYPE_DEPTH_UNKNOWN;
   /* type contiguity is asserted in topology_check() */
   topology->type_depth[HWLOC_OBJ_DIE] = HWLOC_TYPE_DEPTH_UNKNOWN;
@@ -2491,7 +2491,7 @@ hwloc_filter_levels_keep_structure(hwloc_topology_t topology)
 	parent->children = child->children;
 	child->children = NULL;
 	/* update children parent */
-	for(k=0; k<parent->arity; k++)
+	for(k=0; k<parent->arity; ++k)
 	  parent->children[k]->parent = parent;
 	/* append child memory/io/misc children to parent */
 	if (child->memory_first_child) {
@@ -2594,7 +2594,7 @@ hwloc_filter_levels_keep_structure(hwloc_topology_t topology)
   if (res > 0) {
     /* Update object and type depths if some levels were removed */
     hwloc_reset_normal_type_depths(topology);
-    for(i=0; i<topology->nb_levels; i++) {
+    for(i=0; i<topology->nb_levels; ++i) {
       hwloc_obj_type_t type = topology->levels[i][0]->type;
       for(j=0; j<topology->level_nbobjects[i]; j++)
 	topology->levels[i][j]->depth = (int)i;
@@ -2650,7 +2650,7 @@ hwloc_propagate_symmetric_subtree(hwloc_topology_t topology, hwloc_obj_t root)
   while (1) {
     unsigned i;
     /* check current level arities and depth */
-    for(i=1; i<arity; i++)
+    for(i=1; i<arity; ++i)
       if (array[i]->depth != array[0]->depth
 	  || array[i]->arity != array[0]->arity) {
 	free(array);
@@ -2660,7 +2660,7 @@ hwloc_propagate_symmetric_subtree(hwloc_topology_t topology, hwloc_obj_t root)
       /* no more children level, we're ok */
       break;
     /* look at first child of each element now */
-    for(i=0; i<arity; i++)
+    for(i=0; i<arity; ++i)
       array[i] = array[i]->first_child;
   }
   free(array);
@@ -2674,7 +2674,7 @@ static void hwloc_set_group_depth(hwloc_topology_t topology)
 {
   unsigned groupdepth = 0;
   unsigned i, j;
-  for(i=0; i<topology->nb_levels; i++)
+  for(i=0; i<topology->nb_levels; ++i)
     if (topology->levels[i][0]->type == HWLOC_OBJ_GROUP) {
       for (j = 0; j < topology->level_nbobjects[i]; j++)
 	topology->levels[i][j]->attr->group.depth = groupdepth;
@@ -2704,7 +2704,7 @@ hwloc_connect_children(hwloc_obj_t parent)
   prev_child = NULL;
   for (n = 0, child = parent->first_child;
        child;
-       n++,   prev_child = child, child = child->next_sibling) {
+       ++n,   prev_child = child, child = child->next_sibling) {
     child->sibling_rank = n;
     child->prev_sibling = prev_child;
     /* already OK in the array? */
@@ -2733,7 +2733,7 @@ hwloc_connect_children(hwloc_obj_t parent)
   /* refill */
   for (n = 0, child = parent->first_child;
        child;
-       n++,   child = child->next_sibling) {
+       ++n,   child = child->next_sibling) {
     parent->children[n] = child;
   }
 
@@ -2745,7 +2745,7 @@ hwloc_connect_children(hwloc_obj_t parent)
   prev_child = NULL;
   for (n = 0, child = parent->memory_first_child;
        child;
-       n++,   prev_child = child, child = child->next_sibling) {
+       ++n,   prev_child = child, child = child->next_sibling) {
     child->parent = parent;
     child->sibling_rank = n;
     child->prev_sibling = prev_child;
@@ -2758,7 +2758,7 @@ hwloc_connect_children(hwloc_obj_t parent)
   prev_child = NULL;
   for (n = 0, child = parent->io_first_child;
        child;
-       n++,   prev_child = child, child = child->next_sibling) {
+       ++n,   prev_child = child, child = child->next_sibling) {
     child->parent = parent;
     child->sibling_rank = n;
     child->prev_sibling = prev_child;
@@ -2771,7 +2771,7 @@ hwloc_connect_children(hwloc_obj_t parent)
   prev_child = NULL;
   for (n = 0, child = parent->misc_first_child;
        child;
-       n++,   prev_child = child, child = child->next_sibling) {
+       ++n,   prev_child = child, child = child->next_sibling) {
     child->parent = parent;
     child->sibling_rank = n;
     child->prev_sibling = prev_child;
@@ -2808,7 +2808,7 @@ hwloc_build_level_from_list(struct hwloc_special_level_s *slevel)
   obj = slevel->first;
   i = 0;
   while (obj) {
-    i++;
+    ++i;
     obj = obj->next_cousin;
   }
   nb = i;
@@ -2824,7 +2824,7 @@ hwloc_build_level_from_list(struct hwloc_special_level_s *slevel)
     while (obj) {
       obj->logical_index = i;
       slevel->objs[i] = obj;
-      i++;
+      ++i;
       obj = obj->next_cousin;
     }
   }
@@ -2927,13 +2927,13 @@ hwloc_connect_io_misc_levels(hwloc_topology_t topology)
 {
   unsigned i;
 
-  for(i=0; i<HWLOC_NR_SLEVELS; i++)
+  for(i=0; i<HWLOC_NR_SLEVELS; ++i)
     free(topology->slevels[i].objs);
   memset(&topology->slevels, 0, sizeof(topology->slevels));
 
   hwloc_list_special_objects(topology, topology->levels[0][0]);
 
-  for(i=0; i<HWLOC_NR_SLEVELS; i++) {
+  for(i=0; i<HWLOC_NR_SLEVELS; ++i) {
     if (hwloc_build_level_from_list(&topology->slevels[i]) < 0)
       return -1;
   }
@@ -2994,13 +2994,13 @@ hwloc_connect_levels(hwloc_topology_t topology)
      */
 
     /* Look for the first non-PU object, and use the first PU if we really find nothing else */
-    for (i = 0; i < n_objs; i++)
+    for (i = 0; i < n_objs; ++i)
       if (objs[i]->type != HWLOC_OBJ_PU)
         break;
     top_obj = i == n_objs ? objs[0] : objs[i];
 
     /* See if this is actually the topmost object */
-    for (i = 0; i < n_objs; i++) {
+    for (i = 0; i < n_objs; ++i) {
       if (hwloc_type_cmp(top_obj, objs[i]) != HWLOC_OBJ_EQUAL) {
 	if (find_same_type(objs[i], top_obj)) {
 	  /* OBJS[i] is strictly above an object of the same type as TOP_OBJ, so it
@@ -3023,7 +3023,7 @@ hwloc_connect_levels(hwloc_topology_t topology)
 
     /* allocate enough to keep all current objects or their children */
     n_new_objs = 0;
-    for (i = 0; i < n_objs; i++) {
+    for (i = 0; i < n_objs; ++i) {
       if (objs[i]->arity)
 	n_new_objs += objs[i]->arity;
       else
@@ -3040,7 +3040,7 @@ hwloc_connect_levels(hwloc_topology_t topology)
     /* now actually take these objects */
     n_new_objs = 0;
     n_taken_objs = 0;
-    for (i = 0; i < n_objs; i++)
+    for (i = 0; i < n_objs; ++i)
       if (hwloc_type_cmp(top_obj, objs[i]) == HWLOC_OBJ_EQUAL) {
 	/* Take it, add main children.  */
 	taken_objs[n_taken_objs++] = objs[i];
@@ -3058,7 +3058,7 @@ hwloc_connect_levels(hwloc_topology_t topology)
     }
 
     /* Ok, put numbers in the level and link cousins.  */
-    for (i = 0; i < n_taken_objs; i++) {
+    for (i = 0; i < n_taken_objs; ++i) {
       taken_objs[i]->depth = (int) topology->nb_levels;
       taken_objs[i]->logical_index = i;
       if (i) {
@@ -3812,7 +3812,7 @@ int
 hwloc_topology_set_cache_types_filter(hwloc_topology_t topology, enum hwloc_type_filter_e filter)
 {
   unsigned i;
-  for(i=HWLOC_OBJ_L1CACHE; i<HWLOC_OBJ_L3ICACHE; i++)
+  for(i=HWLOC_OBJ_L1CACHE; i<HWLOC_OBJ_L3ICACHE; ++i)
     hwloc_topology_set_type_filter(topology, (hwloc_obj_type_t) i, filter);
   return 0;
 }
@@ -3821,7 +3821,7 @@ int
 hwloc_topology_set_icache_types_filter(hwloc_topology_t topology, enum hwloc_type_filter_e filter)
 {
   unsigned i;
-  for(i=HWLOC_OBJ_L1ICACHE; i<HWLOC_OBJ_L3ICACHE; i++)
+  for(i=HWLOC_OBJ_L1ICACHE; i<HWLOC_OBJ_L3ICACHE; ++i)
     hwloc_topology_set_type_filter(topology, (hwloc_obj_type_t) i, filter);
   return 0;
 }
@@ -4927,7 +4927,7 @@ hwloc_topology_check(struct hwloc_topology *topology)
   /* make sure order arrays are coherent */
   for(type=HWLOC_OBJ_TYPE_MIN; type<HWLOC_OBJ_TYPE_MAX; type++)
     assert(obj_order_type[obj_type_order[type]] == type);
-  for(i=HWLOC_OBJ_TYPE_MIN; i<HWLOC_OBJ_TYPE_MAX; i++)
+  for(i=HWLOC_OBJ_TYPE_MIN; i<HWLOC_OBJ_TYPE_MAX; ++i)
     assert(obj_type_order[obj_order_type[i]] == i);
 
   depth = hwloc_topology_get_depth(topology);
@@ -4943,7 +4943,7 @@ hwloc_topology_check(struct hwloc_topology *topology)
   /* check that last level is PU and that it doesn't have memory */
   assert(hwloc_get_depth_type(topology, depth-1) == HWLOC_OBJ_PU);
   assert(hwloc_get_nbobjs_by_depth(topology, depth-1) > 0);
-  for(i=0; i<hwloc_get_nbobjs_by_depth(topology, depth-1); i++) {
+  for(i=0; i<hwloc_get_nbobjs_by_depth(topology, depth-1); ++i) {
     obj = hwloc_get_obj_by_depth(topology, depth-1, i);
     assert(obj);
     assert(obj->type == HWLOC_OBJ_PU);

@@ -2044,7 +2044,7 @@ void ge_scalarmult(ge_p2 *r, const unsigned char *a, const ge_p3 *A) {
   ge_p3 u;
 
   carry = 0; /* 0..1 */
-  for (i = 0; i < 31; i++) {
+  for (i = 0; i < 31; ++i) {
     carry += a[i]; /* 0..256 */
     carry2 = (carry + 8) >> 4; /* 0..16 */
     e[2 * i] = carry - (carry2 << 4); /* -8..7 */
@@ -2057,7 +2057,7 @@ void ge_scalarmult(ge_p2 *r, const unsigned char *a, const ge_p3 *A) {
   e[63] = carry2; /* 0..8 */
 
   ge_p3_to_cached(&Ai[0], A);
-  for (i = 0; i < 7; i++) {
+  for (i = 0; i < 7; ++i) {
     ge_add(&t, A, &Ai[i]);
     ge_p1p1_to_p3(&u, &t);
     ge_p3_to_cached(&Ai[i + 1], &u);
@@ -2105,7 +2105,7 @@ void ge_scalarmult_p3(ge_p3 *r3, const unsigned char *a, const ge_p3 *A) {
   ge_p2 r;
 
   carry = 0; /* 0..1 */
-  for (i = 0; i < 31; i++) {
+  for (i = 0; i < 31; ++i) {
     carry += a[i]; /* 0..256 */
     carry2 = (carry + 8) >> 4; /* 0..16 */
     e[2 * i] = carry - (carry2 << 4); /* -8..7 */
@@ -2118,7 +2118,7 @@ void ge_scalarmult_p3(ge_p3 *r3, const unsigned char *a, const ge_p3 *A) {
   e[63] = carry2; /* 0..8 */
 
   ge_p3_to_cached(&Ai[0], A);
-  for (i = 0; i < 7; i++) {
+  for (i = 0; i < 7; ++i) {
     ge_add(&t, A, &Ai[i]);
     ge_p1p1_to_p3(&u, &t);
     ge_p3_to_cached(&Ai[i + 1], &u);
@@ -2426,7 +2426,7 @@ setsign:
 
 void sc_0(unsigned char *s) {
   int i;
-  for (i = 0; i < 32; i++) {
+  for (i = 0; i < 32; ++i) {
     s[i] = 0;
   }
 }

@@ -82,7 +82,7 @@ bool ethash_compute_cache_nodes(
 	}
 
 	for (uint32_t j = 0; j != ETHASH_CACHE_ROUNDS; j++) {
-		for (uint32_t i = 0; i != num_nodes; i++) {
+		for (uint32_t i = 0; i != num_nodes; ++i) {
 			uint32_t const idx = nodes[i].words[0] % num_nodes;
 			node data;
 			data = nodes[(num_nodes - 1 + i) % num_nodes];

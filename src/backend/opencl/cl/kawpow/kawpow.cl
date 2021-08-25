@@ -38,10 +38,10 @@ void keccak_f800_round(uint32_t st[25], const int r)
 
     uint32_t t, bc[5];
     // Theta
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 5; ++i)
         bc[i] = st[i] ^ st[i + 5] ^ st[i + 10] ^ st[i + 15] ^ st[i + 20];
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 5; ++i)
     {
         t = bc[(i + 4) % 5] ^ ROTL32(bc[(i + 1) % 5], 1u);
         for (uint32_t j = 0; j < 25; j += 5)
@@ -50,7 +50,7 @@ void keccak_f800_round(uint32_t st[25], const int r)
 
     // Rho Pi
     t = st[1];
-    for (int i = 0; i < 24; i++)
+    for (int i = 0; i < 24; ++i)
     {
         uint32_t j = keccakf_piln[i];
         bc[0] = st[j];
@@ -61,9 +61,9 @@ void keccak_f800_round(uint32_t st[25], const int r)
     //  Chi
     for (uint32_t j = 0; j < 25; j += 5)
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; ++i)
             bc[i] = st[j + i];
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; ++i)
             st[j + i] ^= (~bc[(i + 1) % 5]) & bc[(i + 2) % 5];
     }
 
@@ -116,7 +116,7 @@ void fill_mix(local uint32_t* seed, uint32_t lane_id, uint32_t* mix)
     st.jsr = fnv1a(fnv_hash, lane_id);
     st.jcong = fnv1a(fnv_hash, lane_id);
 #pragma unroll
-    for (int i = 0; i < PROGPOW_REGS; i++)
+    for (int i = 0; i < PROGPOW_REGS; ++i)
         mix[i] = kiss99(&st);
 }
 
@@ -156,7 +156,7 @@ __kernel void progpow_search(__global dag_t const* g_dag, __global uint* job_blo
     for (uint32_t word = lid * PROGPOW_DAG_LOADS; word < PROGPOW_CACHE_WORDS; word += GROUP_SIZE * PROGPOW_DAG_LOADS)
     {
         dag_t load = g_dag[word / PROGPOW_DAG_LOADS];
-        for (int i = 0; i < PROGPOW_DAG_LOADS; i++)
+        for (int i = 0; i < PROGPOW_DAG_LOADS; ++i)
             c_dag[word + i] = load.s[i];
     }
 
@@ -171,20 +171,20 @@ __kernel void progpow_search(__global dag_t const* g_dag, __global uint* job_blo
         uint32_t state[25];     // Keccak's state
 
         // 1st fill with job data
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; ++i)
             state[i] = job_blob[i];
 
         // Apply nonce
         state[8] = gid;
 
         // 3rd apply ravencoin input constraints
-        for (int i = 10; i < 25; i++)
+        for (int i = 10; i < 25; ++i)
             state[i] = ravencoin_rndc[i-10];
 
         // Run intial keccak round
         keccak_f800(state);
 
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; ++i)
             state2[i] = state[i];
 
     }
@@ -235,17 +235,17 @@ __kernel void progpow_search(__global dag_t const* g_dag, __global uint* job_blo
         // Reduce mix data to a per-lane 32-bit digest
         uint32_t mix_hash = FNV_OFFSET_BASIS;
 #pragma unroll
-        for (int i = 0; i < PROGPOW_REGS; i++)
+        for (int i = 0; i < PROGPOW_REGS; ++i)
             fnv1a(mix_hash, mix[i]);
 
         // Reduce all lanes to a single 256-bit digest
         hash32_t digest_temp;
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; ++i)
             digest_temp.uint32s[i] = FNV_OFFSET_BASIS;
         share[group_id].uint32s[lane_id] = mix_hash;
         barrier(CLK_LOCAL_MEM_FENCE);
 #pragma unroll
-        for (int i = 0; i < PROGPOW_LANES; i++)
+        for (int i = 0; i < PROGPOW_LANES; ++i)
             fnv1a(digest_temp.uint32s[i % 8], share[group_id].uint32s[i]);
         if (h == lane_id)
             digest = digest_temp;
@@ -259,15 +259,15 @@ __kernel void progpow_search(__global dag_t const* g_dag, __global uint* job_blo
         uint32_t state[25] = {0x0};     // Keccak's state
 
         // 1st initial 8 words of state are kept as carry-over from initial keccak
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; ++i)
             state[i] = state2[i];
 
         // 2nd subsequent 8 words are carried from digest/mix
-        for (int i = 8; i < 16; i++)
+        for (int i = 8; i < 16; ++i)
             state[i] = digest.uint32s[i - 8];
 
         // 3rd apply ravencoin input constraints
-        for (int i = 16; i < 25; i++)
+        for (int i = 16; i < 25; ++i)
             state[i] = ravencoin_rndc[i - 16];
 
         // Run keccak loop

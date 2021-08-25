@@ -458,7 +458,7 @@ hwloc_components_init(void)
   hwloc_component_finalize_cbs = NULL;
   hwloc_component_finalize_cb_count = 0;
   /* count the max number of finalize callbacks */
-  for(i=0; NULL != hwloc_static_components[i]; i++)
+  for(i=0; NULL != hwloc_static_components[i]; ++i)
     hwloc_component_finalize_cb_count++;
 #ifdef HWLOC_HAVE_PLUGINS
   for(desc = hwloc_plugins; NULL != desc; desc = desc->next)
@@ -473,7 +473,7 @@ hwloc_components_init(void)
   }
 
   /* hwloc_static_components is created by configure in static-components.h */
-  for(i=0; NULL != hwloc_static_components[i]; i++) {
+  for(i=0; NULL != hwloc_static_components[i]; ++i) {
     if (hwloc_static_components[i]->flags) {
       fprintf(stderr, "Ignoring static component with invalid flags %lx\n",
 	      hwloc_static_components[i]->flags);
@@ -626,7 +626,7 @@ hwloc_disc_component_blacklist_one(struct hwloc_topology *topology,
   if (hwloc_components_verbose)
     fprintf(stderr, "Blacklisting component `%s` phases 0x%x\n", comp->name, phases);
 
-  for(i=0; i<topology->nr_blacklisted_components; i++) {
+  for(i=0; i<topology->nr_blacklisted_components; ++i) {
     if (topology->blacklisted_components[i].component == comp) {
       topology->blacklisted_components[i].phases |= phases;
       return 0;
@@ -779,7 +779,7 @@ hwloc_disc_components_enable_others(struct hwloc_topology *topology)
 	hwloc_disc_component_blacklist_one(topology, curenv+1);
 
 	/* remove that blacklisted name from the string */
-	for(i=0; i<s; i++)
+	for(i=0; i<s; ++i)
 	  curenv[i] = *HWLOC_COMPONENT_SEPS;
 
 	/* restore chars (the second loop below needs env to be unmodified) */
@@ -824,7 +824,7 @@ hwloc_disc_components_enable_others(struct hwloc_topology *topology)
 	comp = hwloc_disc_component_find(name, NULL /* we enable the entire component, phases must be blacklisted separately */);
 	if (comp) {
 	  unsigned blacklisted_phases = 0U;
-	  for(i=0; i<topology->nr_blacklisted_components; i++)
+	  for(i=0; i<topology->nr_blacklisted_components; ++i)
 	    if (comp == topology->blacklisted_components[i].component) {
 	      blacklisted_phases = topology->blacklisted_components[i].phases;
 	      break;
@@ -856,7 +856,7 @@ hwloc_disc_components_enable_others(struct hwloc_topology *topology)
       if (!comp->enabled_by_default)
 	goto nextcomp;
       /* check if this component was blacklisted by the application */
-      for(i=0; i<topology->nr_blacklisted_components; i++)
+      for(i=0; i<topology->nr_blacklisted_components; ++i)
 	if (comp == topology->blacklisted_components[i].component) {
 	  blacklisted_phases = topology->blacklisted_components[i].phases;
 	  break;
@@ -903,7 +903,7 @@ hwloc_components_fini(void)
     return;
   }
 
-  for(i=0; i<hwloc_component_finalize_cb_count; i++)
+  for(i=0; i<hwloc_component_finalize_cb_count; ++i)
     hwloc_component_finalize_cbs[hwloc_component_finalize_cb_count-i-1](0);
   free(hwloc_component_finalize_cbs);
   hwloc_component_finalize_cbs = NULL;

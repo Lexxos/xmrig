@@ -82,7 +82,7 @@ static inline void add_random_math(uint8_t* &p, const V4_Instruction* code, int 
             uint8_t* prefix = reinterpret_cast<uint8_t*>(begin);
 
             if (*prefix == 0x49) {
-                *(p++) = 0x41;
+                *(++p) = 0x41;
             }
 
             begin = reinterpret_cast<void_func>(prefix + 1);

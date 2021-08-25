@@ -136,7 +136,7 @@ cpuiddump_find_by_input(unsigned *eax, unsigned *ebx, unsigned *ecx, unsigned *e
 {
   unsigned i;
 
-  for(i=0; i<cpuiddump->nr; i++) {
+  for(i=0; i<cpuiddump->nr; ++i) {
     struct cpuiddump_entry *entry = &cpuiddump->entries[i];
     if ((entry->inmask & 0x1) && *eax != entry->ineax)
       continue;
@@ -910,7 +910,7 @@ static void summarize(struct hwloc_backend *backend, struct procinfo *infos, uns
 
 #ifdef HWLOC_DEBUG
   hwloc_debug("\nSummary of x86 CPUID topology:\n");
-  for(i=0; i<nbprocs; i++) {
+  for(i=0; i<nbprocs; ++i) {
     hwloc_debug("PU %u present=%u apicid=%u on PKG %d CORE %d DIE %d NODE %d\n",
                 i, infos[i].present, infos[i].apicid,
                 infos[i].ids[PKG], infos[i].ids[CORE], infos[i].ids[DIE], infos[i].ids[NODE]);
@@ -918,7 +918,7 @@ static void summarize(struct hwloc_backend *backend, struct procinfo *infos, uns
   hwloc_debug("\n");
 #endif
 
-  for (i = 0; i < nbprocs; i++)
+  for (i = 0; i < nbprocs; ++i)
     if (infos[i].present) {
       hwloc_bitmap_set(complete_cpuset, i);
       one = i;
@@ -1148,7 +1148,7 @@ static void summarize(struct hwloc_backend *backend, struct procinfo *infos, uns
   /* Look for PUs (cannot be filtered-out) */
   if (fulldiscovery) {
     hwloc_debug("%s", "\n\n * CPU cpusets *\n\n");
-    for (i=0; i<nbprocs; i++)
+    for (i=0; i<nbprocs; ++i)
       if(infos[i].present) { /* Only add present PU. We don't know if others actually exist */
        struct hwloc_obj *obj = hwloc_alloc_setup_object(topology, HWLOC_OBJ_PU, i);
        obj->cpuset = hwloc_bitmap_alloc();
@@ -1161,7 +1161,7 @@ static void summarize(struct hwloc_backend *backend, struct procinfo *infos, uns
   /* Look for caches */
   /* First find max level */
   level = 0;
-  for (i = 0; i < nbprocs; i++)
+  for (i = 0; i < nbprocs; ++i)
     for (j = 0; j < infos[i].numcaches; j++)
       if (infos[i].cache[j].level > level)
         level = infos[i].cache[j].level;
@@ -1275,7 +1275,7 @@ look_procs(struct hwloc_backend *backend, struct procinfo *infos, unsigned long 
     set = hwloc_bitmap_alloc();
   }
 
-  for (i = 0; i < nbprocs; i++) {
+  for (i = 0; i < nbprocs; ++i) {
     struct cpuiddump *src_cpuiddump = NULL;
     if (data->src_cpuiddump_path) {
       src_cpuiddump = cpuiddump_read(data->src_cpuiddump_path, i);
@@ -1310,7 +1310,7 @@ look_procs(struct hwloc_backend *backend, struct procinfo *infos, unsigned long 
       /* use hybrid info for cpukinds */
       hwloc_bitmap_t atomset = hwloc_bitmap_alloc();
       hwloc_bitmap_t coreset = hwloc_bitmap_alloc();
-      for(i=0; i<nbprocs; i++) {
+      for(i=0; i<nbprocs; ++i) {
         if (infos[i].hybridcoretype == 0x20)
           hwloc_bitmap_set(atomset, i);
         else if (infos[i].hybridcoretype == 0x40)
@@ -1472,7 +1472,7 @@ int hwloc_look_x86(struct hwloc_backend *backend, unsigned long flags)
   infos = calloc(nbprocs, sizeof(struct procinfo));
   if (NULL == infos)
     goto out;
-  for (i = 0; i < nbprocs; i++) {
+  for (i = 0; i < nbprocs; ++i) {
     infos[i].ids[PKG] = (unsigned) -1;
     infos[i].ids[CORE] = (unsigned) -1;
     infos[i].ids[NODE] = (unsigned) -1;
@@ -1547,7 +1547,7 @@ out_with_os_state:
 
 out_with_infos:
   if (NULL != infos) {
-    for (i = 0; i < nbprocs; i++) {
+    for (i = 0; i < nbprocs; ++i) {
       free(infos[i].cache);
       free(infos[i].otherids);
     }

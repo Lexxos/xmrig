@@ -95,7 +95,7 @@ hwloc__imtg_destroy(struct hwloc_internal_memattr_s *imattr,
   if (imattr->flags & HWLOC_MEMATTR_FLAG_NEED_INITIATOR) {
     /* only attributes with initiators may have something to free() in the array */
     unsigned k;
-    for(k=0; k<imtg->nr_initiators; k++)
+    for(k=0; k<imtg->nr_initiators; ++k)
       hwloc__imi_destroy(&imtg->initiators[k]);
   }
   free(imtg->initiators);
@@ -178,7 +178,7 @@ hwloc_internal_memattrs_dup(struct hwloc_topology *new, struct hwloc_topology *o
       }
       memcpy(nimtg->initiators, oimtg->initiators, oimtg->nr_initiators * sizeof(*nimtg->initiators));
 
-      for(k=0; k<oimtg->nr_initiators; k++) {
+      for(k=0; k<oimtg->nr_initiators; ++k) {
         struct hwloc_internal_memattr_initiator_s *oimi = &oimtg->initiators[k];
         struct hwloc_internal_memattr_initiator_s *nimi = &nimtg->initiators[k];
         if (oimi->initiator.type == HWLOC_LOCATION_TYPE_CPUSET) {
@@ -275,7 +275,7 @@ hwloc_memattr_register(hwloc_topology_t topology,
   }
 
   /* check name isn't already used */
-  for(i=0; i<topology->nr_memattrs; i++) {
+  for(i=0; i<topology->nr_memattrs; ++i) {
     if (!strcmp(_name, topology->memattrs[i].name)) {
       errno = EBUSY;
       return -1;
@@ -449,7 +449,7 @@ hwloc__imtg_refresh(struct hwloc_topology *topology,
   if (imattr->flags & HWLOC_MEMATTR_FLAG_NEED_INITIATOR) {
     /* check the initiators */
     unsigned k, l;
-    for(k=0, l=0; k<imtg->nr_initiators; k++) {
+    for(k=0, l=0; k<imtg->nr_initiators; ++k) {
       int err = hwloc__imi_refresh(topology, &imtg->initiators[k]);
       if (err < 0)
         continue;
@@ -477,7 +477,7 @@ hwloc__imattr_refresh(struct hwloc_topology *topology,
       /* target still valid, move it if some former targets were removed */
       if (j != k)
         memcpy(&imattr->targets[k], &imattr->targets[j], sizeof(*imattr->targets));
-      k++;
+      ++k;
     }
   }
   imattr->nr_targets = k;
@@ -597,7 +597,7 @@ hwloc_memattr_get_targets(hwloc_topology_t topology,
 
   if (imattr->iflags & HWLOC_IMATTR_FLAG_CONVENIENCE) {
     /* convenience attributes */
-    for(i=0; ; i++) {
+    for(i=0; ; ++i) {
       hwloc_obj_t node = hwloc_get_obj_by_type(topology, HWLOC_OBJ_NUMANODE, i);
       if (!node)
         break;
@@ -616,7 +616,7 @@ hwloc_memattr_get_targets(hwloc_topology_t topology,
   if (!(imattr->iflags & HWLOC_IMATTR_FLAG_CACHE_VALID))
     hwloc__imattr_refresh(topology, imattr);
 
-  for(i=0; i<imattr->nr_targets; i++) {
+  for(i=0; i<imattr->nr_targets; ++i) {
     struct hwloc_internal_memattr_target_s *imtg = &imattr->targets[i];
     hwloc_uint64_t value = 0;
 
@@ -658,7 +658,7 @@ hwloc__memattr_target_get_initiator(struct hwloc_internal_memattr_target_s *imtg
   struct hwloc_internal_memattr_initiator_s *news, *new;
   unsigned k;
 
-  for(k=0; k<imtg->nr_initiators; k++) {
+  for(k=0; k<imtg->nr_initiators; ++k) {
     struct hwloc_internal_memattr_initiator_s *imi = &imtg->initiators[k];
     if (match_internal_location(iloc, imi)) {
       return imi;
@@ -763,7 +763,7 @@ hwloc_memattr_get_initiators(hwloc_topology_t topology,
     return -1;
   }
 
-  for(i=0; i<imtg->nr_initiators && i<max; i++) {
+  for(i=0; i<imtg->nr_initiators && i<max; ++i) {
     struct hwloc_internal_memattr_initiator_s *imi = &imtg->initiators[i];
     int err = from_internal_location(&imi->initiator, &initiators[i]);
     assert(!err);
@@ -1102,7 +1102,7 @@ hwloc_memattr_get_best_initiator(hwloc_topology_t topology,
   }
 
   found = 0;
-  for(i=0; i<imtg->nr_initiators; i++) {
+  for(i=0; i<imtg->nr_initiators; ++i) {
     struct hwloc_internal_memattr_initiator_s *imi = &imtg->initiators[i];
     hwloc__update_best_initiator(&best_initiator, &best_value, &found,
                                  &imi->initiator, imi->value,
@@ -1189,7 +1189,7 @@ hwloc_get_local_numanode_objs(hwloc_topology_t topology,
       continue;
     if (i < *nrp)
       nodes[i] = node;
-    i++;
+    ++i;
   }
 
   *nrp = i;

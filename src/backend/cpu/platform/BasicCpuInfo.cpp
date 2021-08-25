@@ -83,7 +83,7 @@ static void cpu_brand_string(char out[64 + 6]) {
     cpuid(VENDOR_ID, cpu_info);
 
     if (cpu_info[EAX_Reg] >= 4) {
-        for (uint32_t i = 0; i < 4; i++) {
+        for (uint32_t i = 0; i < 4; ++i) {
             cpuid(0x80000002 + i, cpu_info);
             memcpy(buf + (i * 16), cpu_info, sizeof(cpu_info));
         }

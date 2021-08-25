@@ -38,7 +38,7 @@ std::vector<xmrig::OclPlatform> xmrig::OclPlatform::get()
 
     out.reserve(platforms.size());
 
-    for (size_t i = 0; i < platforms.size(); i++) {
+    for (size_t i = 0; i < platforms.size(); ++i) {
         out.emplace_back(i, platforms[i]);
     }
 

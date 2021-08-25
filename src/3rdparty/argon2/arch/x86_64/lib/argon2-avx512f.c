@@ -157,7 +157,7 @@ static void fill_block(__m512i *s, const block *ref_block, block *next_block,
     unsigned int i;
 
     if (with_xor) {
-        for (i = 0; i < ARGON2_VECS_IN_BLOCK; i++) {
+        for (i = 0; i < ARGON2_VECS_IN_BLOCK; ++i) {
             s[i] =_mm512_xor_si512(
                 s[i], _mm512_loadu_si512((const __m512i *)ref_block->v + i));
             block_XY[i] = _mm512_xor_si512(
@@ -165,7 +165,7 @@ static void fill_block(__m512i *s, const block *ref_block, block *next_block,
         }
 
     } else {
-        for (i = 0; i < ARGON2_VECS_IN_BLOCK; i++) {
+        for (i = 0; i < ARGON2_VECS_IN_BLOCK; ++i) {
             block_XY[i] = s[i] =_mm512_xor_si512(
                 s[i], _mm512_loadu_si512((const __m512i *)ref_block->v + i));
         }
@@ -183,7 +183,7 @@ static void fill_block(__m512i *s, const block *ref_block, block *next_block,
             s[2 * 4 + i], s[2 * 5 + i], s[2 * 6 + i], s[2 * 7 + i]);
     }
 
-    for (i = 0; i < ARGON2_VECS_IN_BLOCK; i++) {
+    for (i = 0; i < ARGON2_VECS_IN_BLOCK; ++i) {
         s[i] = _mm512_xor_si512(s[i], block_XY[i]);
         _mm512_storeu_si512((__m512i *)next_block->v + i, s[i]);
     }

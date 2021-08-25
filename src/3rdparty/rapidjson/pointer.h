@@ -306,7 +306,7 @@ public:
         }
         else {
             Ch name[21];
-            for (size_t i = 0; i <= length; i++)
+            for (size_t i = 0; i <= length; ++i)
                 name[i] = static_cast<Ch>(buffer[i]);
             Token token = { name, length, index };
             return Append(token, allocator);
@@ -368,7 +368,7 @@ public:
         if (!IsValid() || !rhs.IsValid() || tokenCount_ != rhs.tokenCount_)
             return false;
 
-        for (size_t i = 0; i < tokenCount_; i++) {
+        for (size_t i = 0; i < tokenCount_; ++i) {
             if (tokens_[i].index != rhs.tokens_[i].index ||
                 tokens_[i].length != rhs.tokens_[i].length || 
                 (tokens_[i].length != 0 && std::memcmp(tokens_[i].name, rhs.tokens_[i].name, sizeof(Ch)* tokens_[i].length) != 0))
@@ -399,7 +399,7 @@ public:
         if (tokenCount_ != rhs.tokenCount_)
             return tokenCount_ < rhs.tokenCount_;
 
-        for (size_t i = 0; i < tokenCount_; i++) {
+        for (size_t i = 0; i < tokenCount_; ++i) {
             if (tokens_[i].index != rhs.tokens_[i].index)
                 return tokens_[i].index < rhs.tokens_[i].index;
 
@@ -882,7 +882,7 @@ private:
         bool uriFragment = false;
         if (source[i] == '#') {
             uriFragment = true;
-            i++;
+            ++i;
         }
 
         if (i != length && source[i] != '/') {
@@ -892,7 +892,7 @@ private:
 
         while (i < length) {
             RAPIDJSON_ASSERT(source[i] == '/');
-            i++; // consumes '/'
+            ++i; // consumes '/'
 
             token->name = name;
             bool isNumber = true;
@@ -916,7 +916,7 @@ private:
                         else {
                             name += len;
                             isNumber = false;
-                            i++;
+                            ++i;
                             continue;
                         }
                     }
@@ -926,7 +926,7 @@ private:
                     }
                 }
 
-                i++;
+                ++i;
                 
                 // Escaping "~0" -> '~', "~1" -> '/'
                 if (c == '~') {
@@ -938,7 +938,7 @@ private:
                             parseErrorCode_ = kPointerParseErrorInvalidEscape;
                             goto error;
                         }
-                        i++;
+                        ++i;
                     }
                     else {
                         parseErrorCode_ = kPointerParseErrorInvalidEscape;

@@ -54,7 +54,7 @@ xmrig::Assembly::Id xmrig::Assembly::parse(const char *assembly, Id defaultValue
         return defaultValue;
     }
 
-    for (size_t i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; ++i) {
         if (strcasecmp(assembly, asmNames[i]) == 0) {
             return static_cast<Id>(i);
         }

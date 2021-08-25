@@ -172,7 +172,7 @@ static void fill_block(__m256i *s, const block *ref_block, block *next_block,
     unsigned int i;
 
     if (with_xor) {
-        for (i = 0; i < ARGON2_HWORDS_IN_BLOCK; i++) {
+        for (i = 0; i < ARGON2_HWORDS_IN_BLOCK; ++i) {
             s[i] =_mm256_xor_si256(
                 s[i], _mm256_loadu_si256((const __m256i *)ref_block->v + i));
             block_XY[i] = _mm256_xor_si256(
@@ -180,7 +180,7 @@ static void fill_block(__m256i *s, const block *ref_block, block *next_block,
         }
 
     } else {
-        for (i = 0; i < ARGON2_HWORDS_IN_BLOCK; i++) {
+        for (i = 0; i < ARGON2_HWORDS_IN_BLOCK; ++i) {
             block_XY[i] = s[i] =_mm256_xor_si256(
                 s[i], _mm256_loadu_si256((const __m256i *)ref_block->v + i));
         }
@@ -198,7 +198,7 @@ static void fill_block(__m256i *s, const block *ref_block, block *next_block,
             s[4 * 4 + i], s[4 * 5 + i], s[4 * 6 + i], s[4 * 7 + i]);
     }
 
-    for (i = 0; i < ARGON2_HWORDS_IN_BLOCK; i++) {
+    for (i = 0; i < ARGON2_HWORDS_IN_BLOCK; ++i) {
         s[i] = _mm256_xor_si256(s[i], block_XY[i]);
         _mm256_storeu_si256((__m256i *)next_block->v + i, s[i]);
     }

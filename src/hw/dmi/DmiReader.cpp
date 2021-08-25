@@ -98,7 +98,7 @@ bool xmrig::DmiReader::decode(uint8_t *buf)
         if (h.length < 4 || h.type == 127) {
             break;
         }
-        i++;
+        ++i;
 
         uint8_t *next = data + h.length;
         while (static_cast<uint32_t>(next - buf + 1) < m_size && (next[0] != 0 || next[1] != 0)) {

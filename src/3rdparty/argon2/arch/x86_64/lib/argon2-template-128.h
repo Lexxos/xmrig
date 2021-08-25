@@ -15,14 +15,14 @@ static void fill_block(__m128i *s, const block *ref_block, block *next_block,
     unsigned int i;
 
     if (with_xor) {
-        for (i = 0; i < ARGON2_OWORDS_IN_BLOCK; i++) {
+        for (i = 0; i < ARGON2_OWORDS_IN_BLOCK; ++i) {
             s[i] = _mm_xor_si128(
                         s[i], _mm_loadu_si128((const __m128i *)ref_block->v + i));
             block_XY[i] = _mm_xor_si128(
                         s[i], _mm_loadu_si128((const __m128i *)next_block->v + i));
         }
     } else {
-        for (i = 0; i < ARGON2_OWORDS_IN_BLOCK; i++) {
+        for (i = 0; i < ARGON2_OWORDS_IN_BLOCK; ++i) {
             block_XY[i] = s[i] = _mm_xor_si128(
                         s[i], _mm_loadu_si128((const __m128i *)ref_block->v + i));
         }
@@ -40,7 +40,7 @@ static void fill_block(__m128i *s, const block *ref_block, block *next_block,
             s[8 * 4 + i], s[8 * 5 + i], s[8 * 6 + i], s[8 * 7 + i]);
     }
 
-    for (i = 0; i < ARGON2_OWORDS_IN_BLOCK; i++) {
+    for (i = 0; i < ARGON2_OWORDS_IN_BLOCK; ++i) {
         s[i] = _mm_xor_si128(s[i], block_XY[i]);
         _mm_storeu_si128((__m128i *)next_block->v + i, s[i]);
     }

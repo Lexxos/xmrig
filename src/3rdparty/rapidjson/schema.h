@@ -252,7 +252,7 @@ public:
     bool EndObject(SizeType memberCount) { 
         uint64_t h = Hash(0, kObjectType);
         uint64_t* kv = stack_.template Pop<uint64_t>(memberCount * 2);
-        for (SizeType i = 0; i < memberCount; i++)
+        for (SizeType i = 0; i < memberCount; ++i)
             h ^= Hash(kv[i * 2], kv[i * 2 + 1]);  // Use xor to achieve member order insensitive
         *stack_.template Push<uint64_t>() = h;
         return true;
@@ -262,7 +262,7 @@ public:
     bool EndArray(SizeType elementCount) { 
         uint64_t h = Hash(0, kArrayType);
         uint64_t* e = stack_.template Pop<uint64_t>(elementCount);
-        for (SizeType i = 0; i < elementCount; i++)
+        for (SizeType i = 0; i < elementCount; ++i)
             h = Hash(h, e[i]); // Use hash to achieve element order sensitive
         *stack_.template Push<uint64_t>() = h;
         return true;
@@ -293,7 +293,7 @@ private:
         // FNV-1a from http://isthe.com/chongo/tech/comp/fnv/
         uint64_t h = Hash(RAPIDJSON_UINT64_C2(0x84222325, 0xcbf29ce4), type);
         const unsigned char* d = static_cast<const unsigned char*>(data);
-        for (size_t i = 0; i < len; i++)
+        for (size_t i = 0; i < len; ++i)
             h = Hash(h, d[i]);
         *stack_.template Push<uint64_t>() = h;
         return true;
@@ -352,12 +352,12 @@ struct SchemaValidationContext {
         if (hasher)
             factory.DestroryHasher(hasher);
         if (validators) {
-            for (SizeType i = 0; i < validatorCount; i++)
+            for (SizeType i = 0; i < validatorCount; ++i)
                 factory.DestroySchemaValidator(validators[i]);
             factory.FreeState(validators);
         }
         if (patternPropertiesValidators) {
-            for (SizeType i = 0; i < patternPropertiesValidatorCount; i++)
+            for (SizeType i = 0; i < patternPropertiesValidatorCount; ++i)
                 factory.DestroySchemaValidator(patternPropertiesValidators[i]);
             factory.FreeState(patternPropertiesValidators);
         }
@@ -514,7 +514,7 @@ public:
             if (allProperties.Size() > 0) {
                 propertyCount_ = allProperties.Size();
                 properties_ = static_cast<Property*>(allocator_->Malloc(sizeof(Property) * propertyCount_));
-                for (SizeType i = 0; i < propertyCount_; i++) {
+                for (SizeType i = 0; i < propertyCount_; ++i) {
                     new (&properties_[i]) Property();
                     properties_[i].name = allProperties[i];
                     properties_[i].schema = typeless_;
@@ -647,12 +647,12 @@ public:
     ~Schema() {
         AllocatorType::Free(enum_);
         if (properties_) {
-            for (SizeType i = 0; i < propertyCount_; i++)
+            for (SizeType i = 0; i < propertyCount_; ++i)
                 properties_[i].~Property();
             AllocatorType::Free(properties_);
         }
         if (patternProperties_) {
-            for (SizeType i = 0; i < patternPropertyCount_; i++)
+            for (SizeType i = 0; i < patternPropertyCount_; ++i)
                 patternProperties_[i].~PatternProperty();
             AllocatorType::Free(patternProperties_);
         }
@@ -708,7 +708,7 @@ public:
                 otherValid = context.patternPropertiesValidators[--count]->IsValid();
 
             bool patternValid = true;
-            for (SizeType i = 0; i < count; i++)
+            for (SizeType i = 0; i < count; ++i)
                 if (!context.patternPropertiesValidators[i]->IsValid()) {
                     patternValid = false;
                     break;
@@ -734,7 +734,7 @@ public:
 
         if (enum_) {
             const uint64_t h = context.factory.GetHashCode(context.hasher);
-            for (SizeType i = 0; i < enumCount_; i++)
+            for (SizeType i = 0; i < enumCount_; ++i)
                 if (enum_[i] == h)
                     goto foundEnum;
             context.error_handler.DisallowedValue();
@@ -743,14 +743,14 @@ public:
         }
 
         if (allOf_.schemas)
-            for (SizeType i = allOf_.begin; i < allOf_.begin + allOf_.count; i++)
+            for (SizeType i = allOf_.begin; i < allOf_.begin + allOf_.count; ++i)
                 if (!context.validators[i]->IsValid()) {
                     context.error_handler.NotAllOf(&context.validators[allOf_.begin], allOf_.count);
                     RAPIDJSON_INVALID_KEYWORD_RETURN(GetAllOfString());
                 }
         
         if (anyOf_.schemas) {
-            for (SizeType i = anyOf_.begin; i < anyOf_.begin + anyOf_.count; i++)
+            for (SizeType i = anyOf_.begin; i < anyOf_.begin + anyOf_.count; ++i)
                 if (context.validators[i]->IsValid())
                     goto foundAny;
             context.error_handler.NoneOf(&context.validators[anyOf_.begin], anyOf_.count);
@@ -760,7 +760,7 @@ public:
 
         if (oneOf_.schemas) {
             bool oneValid = false;
-            for (SizeType i = oneOf_.begin; i < oneOf_.begin + oneOf_.count; i++)
+            for (SizeType i = oneOf_.begin; i < oneOf_.begin + oneOf_.count; ++i)
                 if (context.validators[i]->IsValid()) {
                     if (oneValid) {
                         context.error_handler.NotOneOf(&context.validators[oneOf_.begin], oneOf_.count);
@@ -892,7 +892,7 @@ public:
     bool Key(Context& context, const Ch* str, SizeType len, bool) const {
         if (patternProperties_) {
             context.patternPropertiesSchemaCount = 0;
-            for (SizeType i = 0; i < patternPropertyCount_; i++)
+            for (SizeType i = 0; i < patternPropertyCount_; ++i)
                 if (patternProperties_[i].pattern && IsPatternMatch(patternProperties_[i].pattern, str, len)) {
                     context.patternPropertiesSchemas[context.patternPropertiesSchemaCount++] = patternProperties_[i].schema;
                     context.valueSchema = typeless_;
@@ -1119,7 +1119,7 @@ private:
                 out.count = v->Size();
                 out.schemas = static_cast<const Schema**>(allocator_->Malloc(out.count * sizeof(const Schema*)));
                 memset(out.schemas, 0, sizeof(Schema*)* out.count);
-                for (SizeType i = 0; i < out.count; i++)
+                for (SizeType i = 0; i < out.count; ++i)
                     schemaDocument.CreateSchema(&out.schemas[i], q.Append(i, allocator_), (*v)[i], document);
                 out.begin = validatorCount_;
                 validatorCount_ += out.count;
@@ -1204,7 +1204,7 @@ private:
                 context.validators[notValidatorIndex_] = context.factory.CreateSchemaValidator(*not_);
             
             if (hasSchemaDependencies_) {
-                for (SizeType i = 0; i < propertyCount_; i++)
+                for (SizeType i = 0; i < propertyCount_; ++i)
                     if (properties_[i].dependenciesSchema)
                         context.validators[properties_[i].dependenciesValidatorIndex] = context.factory.CreateSchemaValidator(*properties_[i].dependenciesSchema);
             }
@@ -1214,7 +1214,7 @@ private:
     }
 
     void CreateSchemaValidators(Context& context, const SchemaArray& schemas) const {
-        for (SizeType i = 0; i < schemas.count; i++)
+        for (SizeType i = 0; i < schemas.count; ++i)
             context.validators[schemas.begin + i] = context.factory.CreateSchemaValidator(*schemas.schemas[i]);
     }
 
@@ -1448,7 +1448,7 @@ struct TokenHelper {
         *documentStack.template Push<Ch>() = '/';
         char buffer[21];
         size_t length = static_cast<size_t>((sizeof(SizeType) == 4 ? u32toa(index, buffer) : u64toa(index, buffer)) - buffer);
-        for (size_t i = 0; i < length; i++)
+        for (size_t i = 0; i < length; ++i)
             *documentStack.template Push<Ch>() = static_cast<Ch>(buffer[i]);
     }
 };
@@ -1645,7 +1645,7 @@ private:
                 CreateSchemaRecursive(0, pointer.Append(itr->name, allocator_), itr->value, document);
         }
         else if (v.GetType() == kArrayType)
-            for (SizeType i = 0; i < v.Size(); i++)
+            for (SizeType i = 0; i < v.Size(); ++i)
                 CreateSchemaRecursive(0, pointer.Append(i, allocator_), v[i], document);
     }
 
@@ -1675,7 +1675,7 @@ private:
                 const Ch* s = itr->value.GetString();
                 SizeType i = 0;
                 while (i < len && s[i] != '#') // Find the first #
-                    i++;
+                    ++i;
 
                 if (i > 0) { // Remote reference, resolve immediately
                     if (remoteProvider_) {
@@ -2252,7 +2252,7 @@ private:
                 ISchemaValidator**& va = CurrentContext().patternPropertiesValidators;
                 SizeType& validatorCount = CurrentContext().patternPropertiesValidatorCount;
                 va = static_cast<ISchemaValidator**>(MallocState(sizeof(ISchemaValidator*) * count));
-                for (SizeType i = 0; i < count; i++)
+                for (SizeType i = 0; i < count; ++i)
                     va[validatorCount++] = CreateSchemaValidator(*sa[i]);
             }
 
@@ -2303,7 +2303,7 @@ private:
     void AppendToken(const Ch* str, SizeType len) {
         documentStack_.template Reserve<Ch>(1 + len * 2); // worst case all characters are escaped as two characters
         *documentStack_.template PushUnsafe<Ch>() = '/';
-        for (SizeType i = 0; i < len; i++) {
+        for (SizeType i = 0; i < len; ++i) {
             if (str[i] == '~') {
                 *documentStack_.template PushUnsafe<Ch>() = '~';
                 *documentStack_.template PushUnsafe<Ch>() = '0';

@@ -214,7 +214,7 @@ hwloc_diff_trees(hwloc_topology_t topo1, hwloc_obj_t obj1,
 	/* infos */
 	if (obj1->infos_count != obj2->infos_count)
 		goto out_too_complex;
-	for(i=0; i<obj1->infos_count; i++) {
+	for(i=0; i<obj1->infos_count; ++i) {
 		struct hwloc_info_s *info1 = &obj1->infos[i], *info2 = &obj2->infos[i];
 		if (strcmp(info1->name, info2->name))
 			goto out_too_complex;
@@ -352,7 +352,7 @@ int hwloc_topology_diff_build(hwloc_topology_t topo1,
 			    || dist1->kind != dist2->kind
 			    || memcmp(dist1->values, dist2->values, dist1->nbobjs * dist1->nbobjs * sizeof(*dist1->values)))
                           goto roottoocomplex;
-			for(i=0; i<dist1->nbobjs; i++)
+			for(i=0; i<dist1->nbobjs; ++i)
 				/* gp_index isn't enforced above. so compare logical_index instead, which is enforced. requires distances refresh() above */
 				if (dist1->objs[i]->logical_index != dist2->objs[i]->logical_index)
                                   goto roottoocomplex;
@@ -367,7 +367,7 @@ int hwloc_topology_diff_build(hwloc_topology_t topo1,
           hwloc_internal_memattrs_refresh(topo2);
           if (topo1->nr_memattrs != topo2->nr_memattrs)
             goto roottoocomplex;
-          for(i=0; i<topo1->nr_memattrs; i++) {
+          for(i=0; i<topo1->nr_memattrs; ++i) {
             struct hwloc_internal_memattr_s *imattr1 = &topo1->memattrs[i], *imattr2 = &topo2->memattrs[i];
             unsigned j;
            if (strcmp(imattr1->name, imattr2->name)
@@ -386,7 +386,7 @@ int hwloc_topology_diff_build(hwloc_topology_t topo1,
                 goto roottoocomplex;
               if (imattr1->flags & HWLOC_MEMATTR_FLAG_NEED_INITIATOR) {
                 unsigned k;
-                for(k=0; k<imtg1->nr_initiators; k++) {
+                for(k=0; k<imtg1->nr_initiators; ++k) {
                   struct hwloc_internal_memattr_initiator_s *imi1 = &imtg1->initiators[k], *imi2 = &imtg2->initiators[k];
                   if (imi1->value != imi2->value
                       || imi1->initiator.type != imi2->initiator.type)
@@ -469,7 +469,7 @@ hwloc_apply_diff_one(hwloc_topology_t topology,
 			const char *newvalue = reverse ? obj_attr->diff.string.oldvalue : obj_attr->diff.string.newvalue;
 			unsigned i;
 			int found = 0;
-			for(i=0; i<obj->infos_count; i++) {
+			for(i=0; i<obj->infos_count; ++i) {
 				struct hwloc_info_s *info = &obj->infos[i];
 				if (!strcmp(info->name, name)
 				    && !strcmp(info->value, oldvalue)) {

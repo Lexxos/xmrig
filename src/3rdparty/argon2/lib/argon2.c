@@ -291,7 +291,7 @@ static int argon2_compare(const uint8_t *b1, const uint8_t *b2, size_t len) {
     size_t i;
     uint8_t d = 0U;
 
-    for (i = 0U; i < len; i++) {
+    for (i = 0U; i < len; ++i) {
         d |= b1[i] ^ b2[i];
     }
     return (int)((1 & ((d - 1) >> 8)) - 1);

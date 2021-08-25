@@ -621,7 +621,7 @@ hwloc__xml_v1import_distances(struct hwloc_xml_backend_data_s *data,
     v1dist->nbobjs = nbobjs;
     v1dist->floats = matrix;
 
-    for(i=0; i<nbobjs*nbobjs; i++) {
+    for(i=0; i<nbobjs*nbobjs; ++i) {
       struct hwloc__xml_import_state_s childstate;
       char *attrname, *attrvalue;
       float val;
@@ -1203,7 +1203,7 @@ hwloc__xml_import_object(hwloc_topology_t topology,
   if (numa_was_root) {
     /* duplicate NUMA infos to root, most of them are likely root-specific */
     unsigned i;
-    for(i=0; i<obj->infos_count; i++) {
+    for(i=0; i<obj->infos_count; ++i) {
       struct hwloc_info_s *info = &obj->infos[i];
       hwloc_obj_add_info(parent, info->name, info->value);
     }
@@ -2007,7 +2007,7 @@ hwloc_convert_from_v1dist_floats(hwloc_topology_t topology, unsigned nbobjs, flo
 
   is_uint = 1;
   /* find out if all values are integers */
-  for(i=0; i<nbobjs*nbobjs; i++) {
+  for(i=0; i<nbobjs*nbobjs; ++i) {
     float f, iptr, fptr;
     f = floats[i];
     if (f < 0.f) {
@@ -2026,7 +2026,7 @@ hwloc_convert_from_v1dist_floats(hwloc_topology_t topology, unsigned nbobjs, flo
 
  scale:
   /* TODO heuristic to find a good scale */
-  for(i=0; i<nbobjs*nbobjs; i++)
+  for(i=0; i<nbobjs*nbobjs; ++i)
     u64s[i] = (uint64_t)(scale * floats[i]);
 
   /* save the scale in root info attrs.
@@ -2175,7 +2175,7 @@ done:
 	  unsigned i;
 	  for(i=0, node = data->first_numanode;
 	      i<nbobjs;
-	      i++, node = node->next_cousin)
+	      ++i, node = node->next_cousin)
 	    objs[i] = node;
 	  hwloc_convert_from_v1dist_floats(topology, nbobjs, v1dist->floats, values);
 	  hwloc_internal_distances_add(topology, NULL, nbobjs, objs, values, v1dist->kind, 0);
@@ -2362,7 +2362,7 @@ static int
 hwloc__xml_export_check_buffer(const char *buf, size_t length)
 {
   unsigned i;
-  for(i=0; i<length; i++)
+  for(i=0; i<length; ++i)
     if (!HWLOC_XML_CHAR_VALID(buf[i]))
       return -1;
   return 0;
@@ -2510,7 +2510,7 @@ hwloc__xml_export_object_contents (hwloc__xml_export_state_t state, hwloc_topolo
       sprintf(tmp, "%llu", (unsigned long long) obj->attr->numanode.local_memory);
       state->new_prop(state, "local_memory", tmp);
     }
-    for(i=0; i<obj->attr->numanode.page_types_len; i++) {
+    for(i=0; i<obj->attr->numanode.page_types_len; ++i) {
       struct hwloc__xml_export_state_s childstate;
       state->new_child(state, &childstate, "page_type");
       sprintf(tmp, "%llu", (unsigned long long) obj->attr->numanode.page_types[i].size);
@@ -2594,7 +2594,7 @@ hwloc__xml_export_object_contents (hwloc__xml_export_state_t state, hwloc_topolo
     break;
   }
 
-  for(i=0; i<obj->infos_count; i++) {
+  for(i=0; i<obj->infos_count; ++i) {
     char *name = hwloc__xml_export_safestrdup(obj->infos[i].name);
     char *value = hwloc__xml_export_safestrdup(obj->infos[i].value);
     if (name && value) {
@@ -2651,14 +2651,14 @@ hwloc__xml_export_object_contents (hwloc__xml_export_state_t state, hwloc_topolo
 	continue;
       }
 
-      for(i=0; i<nbobjs; i++)
+      for(i=0; i<nbobjs; ++i)
 	logical_to_v2array[dist->objs[i]->logical_index] = i;
 
       /* compute the relative depth */
       if (dist->unique_type == HWLOC_OBJ_NUMANODE) {
 	/* for NUMA nodes, use the highest normal-parent depth + 1 */
 	depth = -1;
-	for(i=0; i<nbobjs; i++) {
+	for(i=0; i<nbobjs; ++i) {
 	  hwloc_obj_t parent = dist->objs[i]->parent;
 	  while (hwloc__obj_type_is_memory(parent->type))
 	    parent = parent->parent;
@@ -2668,7 +2668,7 @@ hwloc__xml_export_object_contents (hwloc__xml_export_state_t state, hwloc_topolo
       } else {
 	/* for non-NUMA nodes, increase the object depth if any of them has memory above */
 	int parent_with_memory = 0;
-	for(i=0; i<nbobjs; i++) {
+	for(i=0; i<nbobjs; ++i) {
 	  hwloc_obj_t parent = dist->objs[i]->parent;
 	  while (parent) {
 	    if (parent->memory_first_child) {
@@ -2689,7 +2689,7 @@ hwloc__xml_export_object_contents (hwloc__xml_export_state_t state, hwloc_topolo
       childstate.new_prop(&childstate, "relative_depth", tmp);
       sprintf(tmp, "%f", 1.f);
       childstate.new_prop(&childstate, "latency_base", tmp);
-      for(i=0; i<nbobjs; i++) {
+      for(i=0; i<nbobjs; ++i) {
         for(j=0; j<nbobjs; j++) {
 	  /* we should export i*nbobjs+j, we translate using logical_to_v2array[] */
 	  unsigned k = logical_to_v2array[i]*nbobjs+logical_to_v2array[j];
@@ -2854,7 +2854,7 @@ hwloc__xml_v1export_object_with_memory(hwloc__xml_export_state_t parentstate, hw
   mstate.end_object(&mstate, "object");
 
   /* now other memory children */
-  for(i=1; i<nr_numanodes; i++)
+  for(i=1; i<nr_numanodes; ++i)
     hwloc__xml_v1export_object (state, topology, numanodes[i], flags);
 
   free(numanodes);
@@ -3065,7 +3065,7 @@ hwloc__xml_export_memattr_target(hwloc__xml_export_state_t state,
   if (imattr->flags & HWLOC_MEMATTR_FLAG_NEED_INITIATOR) {
     /* export all initiators */
     unsigned k;
-    for(k=0; k<imtg->nr_initiators; k++) {
+    for(k=0; k<imtg->nr_initiators; ++k) {
       struct hwloc_internal_memattr_initiator_s *imi = &imtg->initiators[k];
       state->new_child(state, &vstate, "memattr_value");
       vstate.new_prop(&vstate, "target_obj_type", hwloc_obj_type_string(imtg->type));
@@ -3140,7 +3140,7 @@ static void
 hwloc__xml_export_cpukinds(hwloc__xml_export_state_t state, hwloc_topology_t topology)
 {
   unsigned i;
-  for(i=0; i<topology->nr_cpukinds; i++) {
+  for(i=0; i<topology->nr_cpukinds; ++i) {
     struct hwloc_internal_cpukind_s *kind = &topology->cpukinds[i];
     struct hwloc__xml_export_state_s cstate;
     char *setstring;
@@ -3205,7 +3205,7 @@ hwloc__xml_export_topology(hwloc__xml_export_state_t state, hwloc_topology_t top
       /* close first memory child */
       mstate.end_object(&mstate, "object");
       /* now other memory children */
-      for(i=1; i<nr_numanodes; i++)
+      for(i=1; i<nr_numanodes; ++i)
 	hwloc__xml_v1export_object (&rstate, topology, numanodes[i], flags);
       /* close the root */
       rstate.end_object(&rstate, "object");

@@ -193,7 +193,7 @@ unsigned hwloc_get_closest_objs (struct hwloc_topology *topology, struct hwloc_o
     }
 
     /* traverse src's objects and find those that are in nextparent and were not in parent */
-    for(i=0; i<src_nbobjects; i++) {
+    for(i=0; i<src_nbobjects; ++i) {
       if (hwloc_bitmap_isincluded(src_objs[i]->cpuset, nextparent->cpuset)
 	  && !hwloc_bitmap_isincluded(src_objs[i]->cpuset, parent->cpuset)) {
 	objs[stored++] = src_objs[i];
@@ -226,7 +226,7 @@ hwloc__get_largest_objs_inside_cpuset (struct hwloc_obj *current, hwloc_const_bi
     return 1;
   }
 
-  for (i=0; i<current->arity; i++) {
+  for (i=0; i<current->arity; ++i) {
     hwloc_bitmap_t subset;
     int ret;
 
@@ -303,7 +303,7 @@ hwloc__type_match(const char *string,
 {
   const char *s, *t;
   unsigned i;
-  for(i=0, s=string, t=type; ; i++, s++, t++) {
+  for(i=0, s=string, t=type; ; ++i, s++, t++) {
     if (!*s) {
       /* string ends before type */
       if (i<minmatch)
@@ -683,7 +683,7 @@ hwloc_obj_attr_snprintf(char * __hwloc_restrict string, size_t size, hwloc_obj_t
   /* printf infos */
   if (verbose) {
     unsigned i;
-    for(i=0; i<obj->infos_count; i++) {
+    for(i=0; i<obj->infos_count; ++i) {
       struct hwloc_info_s *info = &obj->infos[i];
       const char *quote;
       if (strchr(info->value, ' '))
@@ -730,7 +730,7 @@ int hwloc_bitmap_singlify_per_core(hwloc_topology_t topology, hwloc_bitmap_t cpu
 	  hwloc_bitmap_set(cpuset, pu);
 	  break;
 	}
-	i++;
+	++i;
       }
     } while (1);
   }

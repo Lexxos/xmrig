@@ -59,7 +59,7 @@ hwloc_obj_cpuset_snprintf(char *str, size_t size, size_t nobj, struct hwloc_obj 
   unsigned i;
 
   hwloc_bitmap_zero(set);
-  for(i=0; i<nobj; i++)
+  for(i=0; i<nobj; ++i)
     if (objs[i]->cpuset)
       hwloc_bitmap_or(set, set, objs[i]->cpuset);
 

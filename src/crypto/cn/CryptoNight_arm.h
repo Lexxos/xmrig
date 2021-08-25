@@ -185,7 +185,7 @@ static inline void cn_explode_scratchpad(const __m128i *input, __m128i *output)
     xin7 = _mm_load_si128(input + 11);
 
     if (props.isHeavy()) {
-        for (size_t i = 0; i < 16; i++) {
+        for (size_t i = 0; i < 16; ++i) {
             aes_round<SOFT_AES>(k0, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
             aes_round<SOFT_AES>(k1, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
             aes_round<SOFT_AES>(k2, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
@@ -297,7 +297,7 @@ static inline void cn_implode_scratchpad(const __m128i *input, __m128i *output)
             mix_and_propagate(xout0, xout1, xout2, xout3, xout4, xout5, xout6, xout7);
         }
 
-        for (size_t i = 0; i < 16; i++) {
+        for (size_t i = 0; i < 16; ++i) {
             aes_round<SOFT_AES>(k0, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
             aes_round<SOFT_AES>(k1, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
             aes_round<SOFT_AES>(k2, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
@@ -436,7 +436,7 @@ inline void cryptonight_single_hash(const uint8_t *__restrict__ input, size_t si
 
     uint64_t idx0 = al0;
 
-    for (size_t i = 0; i < props.iterations(); i++) {
+    for (size_t i = 0; i < props.iterations(); ++i) {
         __m128i cx;
         if (IS_CN_HEAVY_TUBE || !SOFT_AES) {
             cx = _mm_load_si128(reinterpret_cast<const __m128i *>(&l0[idx0 & MASK]));
@@ -600,7 +600,7 @@ inline void cryptonight_double_hash(const uint8_t *__restrict__ input, size_t si
     uint64_t idx0 = al0;
     uint64_t idx1 = al1;
 
-    for (size_t i = 0; i < props.iterations(); i++) {
+    for (size_t i = 0; i < props.iterations(); ++i) {
         __m128i cx0, cx1;
         if (IS_CN_HEAVY_TUBE || !SOFT_AES) {
             cx0 = _mm_load_si128((__m128i *) &l0[idx0 & MASK]);

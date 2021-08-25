@@ -48,7 +48,7 @@ xmrig::Hashrate::Hashrate(size_t threads) :
     m_timestamps = new uint64_t*[m_threads];
     m_top        = new uint32_t[m_threads];
 
-    for (size_t i = 0; i < m_threads; i++) {
+    for (size_t i = 0; i < m_threads; ++i) {
         m_counts[i]     = new uint64_t[kBucketSize]();
         m_timestamps[i] = new uint64_t[kBucketSize]();
         m_top[i]        = 0;
@@ -58,7 +58,7 @@ xmrig::Hashrate::Hashrate(size_t threads) :
 
 xmrig::Hashrate::~Hashrate()
 {
-    for (size_t i = 0; i < m_threads; i++) {
+    for (size_t i = 0; i < m_threads; ++i) {
         delete [] m_counts[i];
         delete [] m_timestamps[i];
     }

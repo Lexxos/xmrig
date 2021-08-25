@@ -116,7 +116,7 @@ bool xmrig::NvmlLib::assign(std::vector<CudaDevice> &devices)
         return false;
     }
 
-    for (uint32_t i = 0; i < count; i++) {
+    for (uint32_t i = 0; i < count; ++i) {
         nvmlDevice_t nvmlDevice;
         if (pNvmlDeviceGetHandleByIndex(i, &nvmlDevice) != NVML_SUCCESS) {
             continue;

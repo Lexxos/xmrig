@@ -6822,7 +6822,7 @@ FORCE_INLINE __m128i _mm_minpos_epu16(__m128i a)
 #endif
     // Get the index of the minimum value
     int i;
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 8; ++i) {
         if (min == vgetq_lane_u16(vreinterpretq_u16_m128i(a), 0)) {
             idx = (uint16_t) i;
             break;
@@ -7317,7 +7317,7 @@ FORCE_INLINE __m128i _mm_aesenclast_si128(__m128i a, __m128i RoundKey)
                SSE2NEON_sbox[vreinterpretq_nth_u8_m128i(a, 6)],
                SSE2NEON_sbox[vreinterpretq_nth_u8_m128i(a, 11)]},
     };
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < 16; ++i)
         vreinterpretq_nth_u8_m128i(a, i) =
             v[i / 4][i % 4] ^ vreinterpretq_nth_u8_m128i(RoundKey, i);
     return a;

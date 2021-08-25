@@ -161,7 +161,7 @@ hwloc_encode_to_base64(const char *src, size_t srclength, char *target, size_t t
 	if (0 != srclength) {
 		/* Get what's left. */
 		input[0] = input[1] = input[2] = '\0';
-		for (i = 0; i < srclength; i++)
+		for (i = 0; i < srclength; ++i)
 			input[i] = *src++;
 
 		output[0] = input[0] >> 2;

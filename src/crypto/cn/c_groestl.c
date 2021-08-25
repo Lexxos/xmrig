@@ -123,7 +123,7 @@ static void F512(uint32_t *h, const uint32_t *m) {
   uint32_t y[2*COLS512];
   uint32_t z[2*COLS512];
 
-  for (i = 0; i < 2*COLS512; i++) {
+  for (i = 0; i < 2*COLS512; ++i) {
     z[i] = m[i];
     Ptmp[i] = h[i]^m[i];
   }
@@ -153,7 +153,7 @@ static void F512(uint32_t *h, const uint32_t *m) {
   RND512P((uint8_t*)y, Ptmp, 0x00000009);
 
   /* compute P(h+m) + Q(m) + h */
-  for (i = 0; i < 2*COLS512; i++) {
+  for (i = 0; i < 2*COLS512; ++i) {
     h[i] ^= Ptmp[i]^Qtmp[i];
   }
 }
@@ -207,7 +207,7 @@ static void Init(groestlHashState* ctx) {
   int i = 0;
   /* allocate memory for state and data buffer */
 
-  for(;i<(SIZE512/sizeof(uint32_t));i++)
+  for(;i<(SIZE512/sizeof(uint32_t));++i)
   {
 	ctx->chaining[i] = 0;
   }
@@ -318,15 +318,15 @@ static void Final(groestlHashState* ctx,
   OutputTransformation(ctx);
 
   /* store hash result in output */
-  for (i = SIZE512-hashbytelen; i < SIZE512; i++,j++) {
+  for (i = SIZE512-hashbytelen; i < SIZE512; ++i,j++) {
     output[j] = s[i];
   }
 
   /* zeroise relevant variables and deallocate memory */
-  for (i = 0; i < COLS512; i++) {
+  for (i = 0; i < COLS512; ++i) {
     ctx->chaining[i] = 0;
   }
-  for (i = 0; i < SIZE512; i++) {
+  for (i = 0; i < SIZE512; ++i) {
     ctx->buffer[i] = 0;
   }
 }

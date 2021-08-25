@@ -192,7 +192,7 @@ permute_args(int panonopt_start, int panonopt_end, int opt_end,
 	ncycle = gcd(nnonopts, nopts);
 	cyclelen = (opt_end - panonopt_start) / ncycle;
 
-	for (i = 0; i < ncycle; i++) {
+	for (i = 0; i < ncycle; ++i) {
 		cstart = panonopt_end+i;
 		pos = cstart;
 		for (j = 0; j < cyclelen; j++) {
@@ -311,7 +311,7 @@ parse_long_options(char * const *nargv, const char *options,
 	} else
 		current_argv_len = strlen(current_argv);
 
-	for (i = 0; long_options[i].name; i++) {
+	for (i = 0; long_options[i].name; ++i) {
 		/* find matching long option */
 		if (strncmp(current_argv, long_options[i].name,
 		    current_argv_len))

@@ -295,7 +295,7 @@ xmrig::RxConfig::Mode xmrig::RxConfig::readMode(const rapidjson::Value &value) c
     if (value.IsString()) {
         auto mode = value.GetString();
 
-        for (size_t i = 0; i < modeNames.size(); i++) {
+        for (size_t i = 0; i < modeNames.size(); ++i) {
             if (strcasecmp(mode, modeNames[i]) == 0) {
                 return static_cast<Mode>(i);
             }

@@ -80,6 +80,6 @@ void xmrig::Nonce::stop()
 void xmrig::Nonce::touch()
 {
     for (auto &i : m_sequence) {
-        i++;
+        ++i;
     }
 }

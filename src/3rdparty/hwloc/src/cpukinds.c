@@ -25,7 +25,7 @@ void
 hwloc_internal_cpukinds_destroy(struct hwloc_topology *topology)
 {
   unsigned i;
-  for(i=0; i<topology->nr_cpukinds; i++) {
+  for(i=0; i<topology->nr_cpukinds; ++i) {
     struct hwloc_internal_cpukind_s *kind = &topology->cpukinds[i];
     hwloc_bitmap_free(kind->cpuset);
     hwloc__free_infos(kind->infos, kind->nr_infos);
@@ -49,7 +49,7 @@ hwloc_internal_cpukinds_dup(hwloc_topology_t new, hwloc_topology_t old)
   new->nr_cpukinds = old->nr_cpukinds;
   memcpy(kinds, old->cpukinds, old->nr_cpukinds * sizeof(*kinds));
 
-  for(i=0;i<old->nr_cpukinds; i++) {
+  for(i=0;i<old->nr_cpukinds; ++i) {
     kinds[i].cpuset = hwloc_bitmap_tma_dup(tma, old->cpukinds[i].cpuset);
     if (!kinds[i].cpuset) {
       new->nr_cpukinds = i;
@@ -77,7 +77,7 @@ hwloc_internal_cpukinds_restrict(hwloc_topology_t topology)
 {
   unsigned i;
   int removed = 0;
-  for(i=0; i<topology->nr_cpukinds; i++) {
+  for(i=0; i<topology->nr_cpukinds; ++i) {
     struct hwloc_internal_cpukind_s *kind = &topology->cpukinds[i];
     hwloc_bitmap_and(kind->cpuset, kind->cpuset, hwloc_get_root_obj(topology)->cpuset);
     if (hwloc_bitmap_iszero(kind->cpuset)) {
@@ -103,7 +103,7 @@ hwloc__cpukind_check_duplicate_info(struct hwloc_internal_cpukind_s *kind,
                                     const char *name, const char *value)
 {
   unsigned i;
-  for(i=0; i<kind->nr_infos; i++)
+  for(i=0; i<kind->nr_infos; ++i)
     if (!strcmp(kind->infos[i].name, name)
         && !strcmp(kind->infos[i].value, value))
       return 1;
@@ -115,7 +115,7 @@ hwloc__cpukind_add_infos(struct hwloc_internal_cpukind_s *kind,
                          const struct hwloc_info_s *infos, unsigned nr_infos)
 {
   unsigned i;
-  for(i=0; i<nr_infos; i++) {
+  for(i=0; i<nr_infos; ++i) {
     if (hwloc__cpukind_check_duplicate_info(kind, infos[i].name, infos[i].value))
       continue;
     hwloc__add_info(&kind->infos, &kind->nr_infos, infos[i].name, infos[i].value);
@@ -173,7 +173,7 @@ hwloc_internal_cpukinds_register(hwloc_topology_t topology, hwloc_cpuset_t cpuse
   }
 
   newnr = oldnr = topology->nr_cpukinds;
-  for(i=0; i<oldnr; i++) {
+  for(i=0; i<oldnr; ++i) {
     int res = hwloc_bitmap_compare_inclusion(cpuset, kinds[i].cpuset);
     if (res == HWLOC_BITMAP_INTERSECTS || res == HWLOC_BITMAP_INCLUDED) {
       /* new kind with intersection of cpusets and union of infos */
@@ -268,7 +268,7 @@ static int
 hwloc__cpukinds_check_duplicate_rankings(struct hwloc_topology *topology)
 {
   unsigned i,j;
-  for(i=0; i<topology->nr_cpukinds; i++)
+  for(i=0; i<topology->nr_cpukinds; ++i)
     for(j=i+1; j<topology->nr_cpukinds; j++)
       if (topology->cpukinds[i].ranking_value == topology->cpukinds[j].ranking_value)
         /* if any duplicate, fail */
@@ -282,7 +282,7 @@ hwloc__cpukinds_try_rank_by_forced_efficiency(struct hwloc_topology *topology)
   unsigned i;
 
   hwloc_debug("Trying to rank cpukinds by forced efficiency...\n");
-  for(i=0; i<topology->nr_cpukinds; i++) {
+  for(i=0; i<topology->nr_cpukinds; ++i) {
     if (topology->cpukinds[i].forced_efficiency == HWLOC_CPUKIND_EFFICIENCY_UNKNOWN)
       /* if any unknown, fail */
       return -1;
@@ -312,7 +312,7 @@ hwloc__cpukinds_summarize_info(struct hwloc_topology *topology,
   summary->have_base_freq = 1;
   summary->have_intel_core_type = 1;
 
-  for(i=0; i<topology->nr_cpukinds; i++) {
+  for(i=0; i<topology->nr_cpukinds; ++i) {
     struct hwloc_internal_cpukind_s *kind = &topology->cpukinds[i];
     for(j=0; j<kind->nr_infos; j++) {
       struct hwloc_info_s *info = &kind->infos[j];
@@ -365,7 +365,7 @@ hwloc__cpukinds_try_rank_by_info(struct hwloc_topology *topology,
         || (!summary->have_max_freq && !summary->have_base_freq))
       return -1;
     /* rank first by coretype (Core>>Atom) then by frequency, base if available, max otherwise */
-    for(i=0; i<topology->nr_cpukinds; i++) {
+    for(i=0; i<topology->nr_cpukinds; ++i) {
       struct hwloc_internal_cpukind_s *kind = &topology->cpukinds[i];
       if (summary->have_base_freq)
         kind->ranking_value = (summary->summaries[i].intel_core_type << 20) + summary->summaries[i].base_freq;
@@ -379,7 +379,7 @@ hwloc__cpukinds_try_rank_by_info(struct hwloc_topology *topology,
     if (!summary->have_intel_core_type)
       return -1;
     /* rank by coretype (Core>>Atom) */
-    for(i=0; i<topology->nr_cpukinds; i++) {
+    for(i=0; i<topology->nr_cpukinds; ++i) {
       struct hwloc_internal_cpukind_s *kind = &topology->cpukinds[i];
       kind->ranking_value = (summary->summaries[i].intel_core_type << 20);
     }
@@ -390,7 +390,7 @@ hwloc__cpukinds_try_rank_by_info(struct hwloc_topology *topology,
     if (!summary->have_max_freq && !summary->have_base_freq)
       return -1;
     /* rank first by frequency, base if available, max otherwise */
-    for(i=0; i<topology->nr_cpukinds; i++) {
+    for(i=0; i<topology->nr_cpukinds; ++i) {
       struct hwloc_internal_cpukind_s *kind = &topology->cpukinds[i];
       if (summary->have_base_freq)
         kind->ranking_value = summary->summaries[i].base_freq;
@@ -404,7 +404,7 @@ hwloc__cpukinds_try_rank_by_info(struct hwloc_topology *topology,
     if (!summary->have_max_freq)
       return -1;
     /* rank first by frequency, base if available, max otherwise */
-    for(i=0; i<topology->nr_cpukinds; i++) {
+    for(i=0; i<topology->nr_cpukinds; ++i) {
       struct hwloc_internal_cpukind_s *kind = &topology->cpukinds[i];
       kind->ranking_value = summary->summaries[i].max_freq;
     }
@@ -415,7 +415,7 @@ hwloc__cpukinds_try_rank_by_info(struct hwloc_topology *topology,
     if (!summary->have_base_freq)
       return -1;
     /* rank first by frequency, base if available, max otherwise */
-    for(i=0; i<topology->nr_cpukinds; i++) {
+    for(i=0; i<topology->nr_cpukinds; ++i) {
       struct hwloc_internal_cpukind_s *kind = &topology->cpukinds[i];
       kind->ranking_value = summary->summaries[i].base_freq;
     }
@@ -440,7 +440,7 @@ hwloc__cpukinds_finalize_ranking(struct hwloc_topology *topology)
   /* sort */
   qsort(topology->cpukinds, topology->nr_cpukinds, sizeof(*topology->cpukinds), hwloc__cpukinds_compare_ranking_values);
   /* define our own efficiency between 0 and N-1 */
-  for(i=0; i<topology->nr_cpukinds; i++)
+  for(i=0; i<topology->nr_cpukinds; ++i)
     topology->cpukinds[i].efficiency = i;
 }
 
@@ -548,17 +548,17 @@ hwloc_internal_cpukinds_rank(struct hwloc_topology *topology)
 
  failed:
   /* failed to rank, clear efficiencies */
-  for(i=0; i<topology->nr_cpukinds; i++)
+  for(i=0; i<topology->nr_cpukinds; ++i)
     topology->cpukinds[i].efficiency = HWLOC_CPUKIND_EFFICIENCY_UNKNOWN;
   hwloc_debug("Failed to rank cpukinds.\n\n");
   return 0;
 
  ready:
-  for(i=0; i<topology->nr_cpukinds; i++)
+  for(i=0; i<topology->nr_cpukinds; ++i)
     hwloc_debug("cpukind #%u got ranking value %llu\n", i, (unsigned long long) topology->cpukinds[i].ranking_value);
   hwloc__cpukinds_finalize_ranking(topology);
 #ifdef HWLOC_DEBUG
-  for(i=0; i<topology->nr_cpukinds; i++)
+  for(i=0; i<topology->nr_cpukinds; ++i)
     assert(topology->cpukinds[i].efficiency == (int) i);
 #endif
   hwloc_debug("\n");

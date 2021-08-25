@@ -158,7 +158,7 @@ __kernel void cn0(__global ulong *input, int inlen, __global uint4 *Scratchpad, 
      * The left over thread results will be ignored
      */
     #pragma unroll 16
-    for (size_t i = 0; i < 16; i++) {
+    for (size_t i = 0; i < 16; ++i) {
         #pragma unroll 10
         for (int j = 0; j < 10; ++j) {
             uint4 t = ((uint4 *)ExpandedKey1)[j];
@@ -701,7 +701,7 @@ __kernel void cn2(__global uint4 *Scratchpad, __global ulong *states, __global u
      * The left over thread results will be ignored
      */
     #pragma unroll 16
-    for(size_t i = 0; i < 16; i++)
+    for(size_t i = 0; i < 16; ++i)
     {
         #pragma unroll 10
         for (int j = 0; j < 10; ++j) {

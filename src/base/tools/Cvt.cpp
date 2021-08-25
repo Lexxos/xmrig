@@ -53,7 +53,7 @@ static char *cvt_bin2hex(char *const hex, const size_t hex_maxlen, const unsigne
         hex[i * 2U] = (char) x;
         x >>= 8;
         hex[i * 2U + 1U] = (char) x;
-        i++;
+        ++i;
     }
 
     if (i * 2U < hex_maxlen) {

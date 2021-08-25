@@ -92,7 +92,7 @@ hwloc_synthetic_process_indexes(struct hwloc_synthetic_backend_data_s *data,
   if (i == length) {
     /* explicit array of indexes */
 
-    for(i=0; i<total; i++) {
+    for(i=0; i<total; ++i) {
       const char *next;
       unsigned idx = strtoul(attr, (char **) &next, 10);
       if (next == attr) {
@@ -207,7 +207,7 @@ hwloc_synthetic_process_indexes(struct hwloc_synthetic_backend_data_s *data,
 	  free(loops);
 	  goto out_with_array;
 	}
-	for(i=0; ; i++) {
+	for(i=0; ; ++i) {
 	  if (!data->level[i].arity) {
 	    loops[cur_loop].level_depth = (unsigned)-1;
 	    break;
@@ -240,7 +240,7 @@ hwloc_synthetic_process_indexes(struct hwloc_synthetic_backend_data_s *data,
 	unsigned mydepth = loops[cur_loop].level_depth;
 	unsigned prevdepth = 0;
 	unsigned step, nb;
-	for(i=0; i<nr_loops; i++) {
+	for(i=0; i<nr_loops; ++i) {
 	  if (loops[i].level_depth == mydepth && i != cur_loop) {
 	    if (verbose)
 	      fprintf(stderr, "Invalid duplicate interleaving loop type in synthetic index '%s'\n", attr);
@@ -281,7 +281,7 @@ hwloc_synthetic_process_indexes(struct hwloc_synthetic_backend_data_s *data,
 
     /* generate the array of indexes */
     mul = 1;
-    for(i=0; i<nr_loops; i++) {
+    for(i=0; i<nr_loops; ++i) {
       unsigned step = loops[i].step;
       unsigned nb = loops[i].nb;
       for(j=0; j<total; j++)
@@ -409,7 +409,7 @@ static void
 hwloc_synthetic_free_levels(struct hwloc_synthetic_backend_data_s *data)
 {
   unsigned i;
-  for(i=0; i<HWLOC_SYNTHETIC_MAX_DEPTH; i++) {
+  for(i=0; i<HWLOC_SYNTHETIC_MAX_DEPTH; ++i) {
     struct hwloc_synthetic_level_data_s *curlevel = &data->level[i];
     struct hwloc_synthetic_attached_s **pprev = &curlevel->attached;
     while (*pprev) {
@@ -630,7 +630,7 @@ hwloc_backend_synthetic_init(struct hwloc_synthetic_backend_data_s *data,
   }
   data->level[count-1].attr.type = HWLOC_OBJ_PU;
 
-  for(i=HWLOC_OBJ_TYPE_MIN; i<HWLOC_OBJ_TYPE_MAX; i++) {
+  for(i=HWLOC_OBJ_TYPE_MIN; i<HWLOC_OBJ_TYPE_MAX; ++i) {
     type_count[i] = 0;
   }
   for(i=count-1; i>0; i--) {
@@ -685,7 +685,7 @@ hwloc_backend_synthetic_init(struct hwloc_synthetic_backend_data_s *data,
 
   /* deal with missing intermediate levels */
   unset = 0;
-  for(i=1; i<count-1; i++) {
+  for(i=1; i<count-1; ++i) {
     if (data->level[i].attr.type == HWLOC_OBJ_TYPE_NONE)
       unset++;
   }
@@ -721,7 +721,7 @@ hwloc_backend_synthetic_init(struct hwloc_synthetic_backend_data_s *data,
     needgroups = _count;
 
     /* we place them in order: groups, package, numa, caches, core */
-    for(i = 0; i < needgroups; i++) {
+    for(i = 0; i < needgroups; ++i) {
       unsigned depth = 1 + i;
       data->level[depth].attr.type = HWLOC_OBJ_GROUP;
       type_count[HWLOC_OBJ_GROUP]++;
@@ -791,7 +791,7 @@ hwloc_backend_synthetic_init(struct hwloc_synthetic_backend_data_s *data,
     count++;
   }
 
-  for (i=0; i<count; i++) {
+  for (i=0; i<count; ++i) {
     struct hwloc_synthetic_level_data_s *curlevel = &data->level[i];
     hwloc_obj_type_t type = curlevel->attr.type;
 
@@ -947,7 +947,7 @@ hwloc__look_synthetic(struct hwloc_topology *topology,
   if (!curlevel->arity) {
     hwloc_bitmap_set(set, os_index);
   } else {
-    for (i = 0; i < curlevel->arity; i++)
+    for (i = 0; i < curlevel->arity; ++i)
       hwloc__look_synthetic(topology, data, level + 1, set);
   }
 
@@ -995,7 +995,7 @@ hwloc_look_synthetic(struct hwloc_backend *backend, struct hwloc_disc_status *ds
   topology->support.discovery->numa_memory = 1; /* specified or default size */
 
   /* start with os_index 0 for each level */
-  for (i = 0; data->level[i].arity > 0; i++)
+  for (i = 0; data->level[i].arity > 0; ++i)
     data->level[i].indexes.next = 0;
   data->numa_attached_indexes.next = 0;
   /* ... including the last one */
@@ -1005,7 +1005,7 @@ hwloc_look_synthetic(struct hwloc_backend *backend, struct hwloc_disc_status *ds
   topology->levels[0][0]->type = data->level[0].attr.type;
   hwloc_synthetic_set_attr(&data->level[0].attr, topology->levels[0][0]);
 
-  for (i = 0; i < data->level[0].arity; i++)
+  for (i = 0; i < data->level[0].arity; ++i)
     hwloc__look_synthetic(topology, data, 1, cpuset);
 
   hwloc_synthetic_insert_attached(topology, data, data->level[0].attached, cpuset);
@@ -1144,7 +1144,7 @@ hwloc__export_synthetic_indexes(hwloc_obj_t *level, unsigned total,
       goto exportall;
 
     /* look for os_index == step */
-    for(i=1; i<total; i++)
+    for(i=1; i<total; ++i)
       if (level[i]->os_index == step)
 	break;
     if (i == total)
@@ -1164,7 +1164,7 @@ hwloc__export_synthetic_indexes(hwloc_obj_t *level, unsigned total,
   }
 
   /* check this interleaving */
-  for(i=0; i<total; i++) {
+  for(i=0; i<total; ++i) {
     unsigned ind = 0;
     unsigned mul = 1;
     for(j=0; j<nr_loops; j++) {
@@ -1412,7 +1412,7 @@ hwloc_check_memory_symmetric(struct hwloc_topology * topology)
     first_parent = node->parent;
 
     /* check whether all object on parent's level have same number of NUMA bits */
-    for(i=0; i<hwloc_get_nbobjs_by_depth(topology, first_parent->depth); i++) {
+    for(i=0; i<hwloc_get_nbobjs_by_depth(topology, first_parent->depth); ++i) {
       hwloc_obj_t parent, mchild;
 
       parent = hwloc_get_obj_by_depth(topology, first_parent->depth, i);

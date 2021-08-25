@@ -246,13 +246,13 @@ static bool lookup(char *line, const char *pattern, String &value)
         return false;
     }
 
-    for (p = line + len; isspace(*p); p++);
+    for (p = line + len; isspace(*p); ++p);
 
     if (*p != ':') {
         return false;
     }
 
-    for (++p; isspace(*p); p++);
+    for (++p; isspace(*p); ++p);
 
     if (!*p) {
         return false;

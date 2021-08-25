@@ -156,49 +156,49 @@ static void E8(hashState *state)
 
       for (roundnumber = 0; roundnumber < 42; roundnumber = roundnumber+7) {
             /*round 7*roundnumber+0: Sbox, MDS and Swapping layers*/
-            for (i = 0; i < 2; i++) {
+            for (i = 0; i < 2; ++i) {
                   SS(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i],((uint64*)E8_bitslice_roundconstant[roundnumber+0])[i],((uint64*)E8_bitslice_roundconstant[roundnumber+0])[i+2] );
                   L(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i]);
                   SWAP1(state->x[1][i]); SWAP1(state->x[3][i]); SWAP1(state->x[5][i]); SWAP1(state->x[7][i]);
             }
 
             /*round 7*roundnumber+1: Sbox, MDS and Swapping layers*/
-            for (i = 0; i < 2; i++) {
+            for (i = 0; i < 2; ++i) {
                   SS(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i],((uint64*)E8_bitslice_roundconstant[roundnumber+1])[i],((uint64*)E8_bitslice_roundconstant[roundnumber+1])[i+2] );
                   L(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i]);
                   SWAP2(state->x[1][i]); SWAP2(state->x[3][i]); SWAP2(state->x[5][i]); SWAP2(state->x[7][i]);
             }
 
             /*round 7*roundnumber+2: Sbox, MDS and Swapping layers*/
-            for (i = 0; i < 2; i++) {
+            for (i = 0; i < 2; ++i) {
                   SS(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i],((uint64*)E8_bitslice_roundconstant[roundnumber+2])[i],((uint64*)E8_bitslice_roundconstant[roundnumber+2])[i+2] );
                   L(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i]);
                   SWAP4(state->x[1][i]); SWAP4(state->x[3][i]); SWAP4(state->x[5][i]); SWAP4(state->x[7][i]);
             }
 
             /*round 7*roundnumber+3: Sbox, MDS and Swapping layers*/
-            for (i = 0; i < 2; i++) {
+            for (i = 0; i < 2; ++i) {
                   SS(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i],((uint64*)E8_bitslice_roundconstant[roundnumber+3])[i],((uint64*)E8_bitslice_roundconstant[roundnumber+3])[i+2] );
                   L(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i]);
                   SWAP8(state->x[1][i]); SWAP8(state->x[3][i]); SWAP8(state->x[5][i]); SWAP8(state->x[7][i]);
             }
 
             /*round 7*roundnumber+4: Sbox, MDS and Swapping layers*/
-            for (i = 0; i < 2; i++) {
+            for (i = 0; i < 2; ++i) {
                   SS(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i],((uint64*)E8_bitslice_roundconstant[roundnumber+4])[i],((uint64*)E8_bitslice_roundconstant[roundnumber+4])[i+2] );
                   L(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i]);
                   SWAP16(state->x[1][i]); SWAP16(state->x[3][i]); SWAP16(state->x[5][i]); SWAP16(state->x[7][i]);
             }
 
             /*round 7*roundnumber+5: Sbox, MDS and Swapping layers*/
-            for (i = 0; i < 2; i++) {
+            for (i = 0; i < 2; ++i) {
                   SS(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i],((uint64*)E8_bitslice_roundconstant[roundnumber+5])[i],((uint64*)E8_bitslice_roundconstant[roundnumber+5])[i+2] );
                   L(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i]);
                   SWAP32(state->x[1][i]); SWAP32(state->x[3][i]); SWAP32(state->x[5][i]); SWAP32(state->x[7][i]);
             }
 
             /*round 7*roundnumber+6: Sbox and MDS layers*/
-            for (i = 0; i < 2; i++) {
+            for (i = 0; i < 2; ++i) {
                   SS(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i],((uint64*)E8_bitslice_roundconstant[roundnumber+6])[i],((uint64*)E8_bitslice_roundconstant[roundnumber+6])[i+2] );
                   L(state->x[0][i],state->x[2][i],state->x[4][i],state->x[6][i],state->x[1][i],state->x[3][i],state->x[5][i],state->x[7][i]);
             }
@@ -319,9 +319,9 @@ static HashReturn Final(hashState *state, BitSequence *hashval)
       else {
 		    /*set the rest of the bytes in the buffer to 0*/
             if ( (state->datasize_in_buffer & 7) == 0)
-                  for (i = (state->databitlen & 0x1ff) >> 3; i < 64; i++)  state->buffer[i] = 0;
+                  for (i = (state->databitlen & 0x1ff) >> 3; i < 64; ++i)  state->buffer[i] = 0;
             else
-                  for (i = ((state->databitlen & 0x1ff) >> 3)+1; i < 64; i++)  state->buffer[i] = 0;
+                  for (i = ((state->databitlen & 0x1ff) >> 3)+1; i < 64; ++i)  state->buffer[i] = 0;
 
             /*pad and process the partial block when databitlen is not multiple of 512 bits, then hash the padded blocks*/
             state->buffer[((state->databitlen & 0x1ff) >> 3)] |= 1 << (7- (state->databitlen & 7));

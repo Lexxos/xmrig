@@ -147,7 +147,7 @@ sha3_Update(void *priv, void const *bufIn, size_t len)
 
     SHA3_TRACE("have %d full words to process", (unsigned)words);
 
-    for(i = 0; i < words; i++, buf += sizeof(uint64_t)) {
+    for(i = 0; i < words; ++i, buf += sizeof(uint64_t)) {
         const uint64_t t = (uint64_t) (buf[0]) |
                 ((uint64_t) (buf[1]) << 8 * 1) |
                 ((uint64_t) (buf[2]) << 8 * 2) |
@@ -219,7 +219,7 @@ sha3_Finalize(void *priv)
      * #endif */
     {
         unsigned i;
-        for(i = 0; i < SHA3_KECCAK_SPONGE_WORDS; i++) {
+        for(i = 0; i < SHA3_KECCAK_SPONGE_WORDS; ++i) {
             const unsigned t1 = (uint32_t) ctx->s[i];
             const unsigned t2 = (uint32_t) ((ctx->s[i] >> 16) >> 16);
             ctx->sb[i * 8 + 0] = (uint8_t) (t1);

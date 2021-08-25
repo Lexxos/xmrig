@@ -31,7 +31,7 @@ namespace xmrig {
 /* Replace non-ASCII characters with dots */
 static void ascii_filter(char *bp, size_t len)
 {
-    for (size_t i = 0; i < len; i++) {
+    for (size_t i = 0; i < len; ++i) {
         if (bp[i] < 32 || bp[i] >= 127) {
             bp[i] = '.';
         }

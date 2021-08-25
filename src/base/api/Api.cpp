@@ -205,7 +205,7 @@ void xmrig::Api::genId(const String &id)
         return;
     }
 
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count; ++i) {
         if (!interfaces[i].is_internal && interfaces[i].address.address4.sin_family == AF_INET) {
             uint8_t hash[200];
             const size_t addrSize = sizeof(interfaces[i].phys_addr);

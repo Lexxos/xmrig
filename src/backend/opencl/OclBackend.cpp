@@ -239,7 +239,7 @@ public:
                        data.device.printableName().data()
                        );
 
-                    i++;
+                    ++i;
         }
 
         OclSharedState::start(threads, job);
@@ -393,7 +393,7 @@ void xmrig::OclBackend::printHashrate(bool details)
                     data.device.printableName().data()
                     );
 
-         i++;
+         ++i;
     }
 
     Log::print(WHITE_BOLD_S "|        - |        - | %8s | %8s | %8s |",
@@ -520,7 +520,7 @@ rapidjson::Value xmrig::OclBackend::toJSON(rapidjson::Document &doc) const
 
         data.device.toJSON(thread, doc);
 
-        i++;
+        ++i;
         threads.PushBack(thread, allocator);
     }
 

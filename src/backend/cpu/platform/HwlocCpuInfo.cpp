@@ -55,7 +55,7 @@ static inline bool isCacheObject(hwloc_obj_t obj)
 template <typename func>
 static inline void findCache(hwloc_obj_t obj, unsigned min, unsigned max, func lambda)
 {
-    for (size_t i = 0; i < obj->arity; i++) {
+    for (size_t i = 0; i < obj->arity; ++i) {
         if (isCacheObject(obj->children[i])) {
             const unsigned depth = obj->children[i]->attr->cache.depth;
             if (depth < min || depth > max) {
@@ -73,7 +73,7 @@ static inline void findCache(hwloc_obj_t obj, unsigned min, unsigned max, func l
 template <typename func>
 static inline void findByType(hwloc_obj_t obj, hwloc_obj_type_t type, func lambda)
 {
-    for (size_t i = 0; i < obj->arity; i++) {
+    for (size_t i = 0; i < obj->arity; ++i) {
         if (obj->children[i]->type == type) {
             lambda(obj->children[i]);
         }
@@ -425,6 +425,6 @@ void xmrig::HwlocCpuInfo::setThreads(size_t threads)
     size_t i       = 0;
 
     while ((pu = hwloc_get_next_obj_by_type(m_topology, HWLOC_OBJ_PU, pu)) != nullptr) {
-        m_units[i++] = static_cast<int32_t>(pu->os_index);
+        m_units[++i] = static_cast<int32_t>(pu->os_index);
     }
 }

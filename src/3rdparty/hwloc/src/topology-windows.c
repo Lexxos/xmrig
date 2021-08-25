@@ -724,14 +724,14 @@ hwloc_win_get_area_memlocation(hwloc_topology_t topology __hwloc_attribute_unuse
   if (!pv)
     return -1;
 
-  for (i = 0; i < nb; i++)
+  for (i = 0; i < nb; ++i)
     pv[i].VirtualAddress = (void*) (start + i * page_size);
   if (!QueryWorkingSetExProc(GetCurrentProcess(), pv, nb * sizeof(*pv))) {
     free(pv);
     return -1;
   }
 
-  for (i = 0; i < nb; i++) {
+  for (i = 0; i < nb; ++i) {
     if (pv[i].VirtualAttributes.Valid)
       hwloc_bitmap_set(nodeset, pv[i].VirtualAttributes.Node);
   }
@@ -771,7 +771,7 @@ hwloc_win_efficiency_classes_add(struct hwloc_win_efficiency_classes *classes,
   unsigned i;
 
   /* look for existing class with that efficiency value */
-  for(i=0; i<classes->nr_classes; i++) {
+  for(i=0; i<classes->nr_classes; ++i) {
     if (classes->classes[i].value == value) {
       hwloc_bitmap_or(classes->classes[i].cpuset, classes->classes[i].cpuset, cpuset);
       return 0;
@@ -808,7 +808,7 @@ hwloc_win_efficiency_classes_register(hwloc_topology_t topology,
                                       struct hwloc_win_efficiency_classes *classes)
 {
   unsigned i;
-  for(i=0; i<classes->nr_classes; i++) {
+  for(i=0; i<classes->nr_classes; ++i) {
     hwloc_internal_cpukinds_register(topology, classes->classes[i].cpuset, classes->classes[i].value, NULL, 0, 0);
     classes->classes[i].cpuset = NULL; /* given to cpukinds */
   }
@@ -818,7 +818,7 @@ static void
 hwloc_win_efficiency_classes_destroy(struct hwloc_win_efficiency_classes *classes)
 {
   unsigned i;
-  for(i=0; i<classes->nr_classes; i++)
+  for(i=0; i<classes->nr_classes; ++i)
     hwloc_bitmap_free(classes->classes[i].cpuset);
   free(classes->classes);
 }
@@ -903,7 +903,7 @@ hwloc_look_windows(struct hwloc_backend *backend, struct hwloc_disc_status *dsta
 
       assert(!length || procInfo);
 
-      for (i = 0; i < length / sizeof(*procInfo); i++) {
+      for (i = 0; i < length / sizeof(*procInfo); ++i) {
 
         /* Ignore unknown caches */
 	if (procInfo->Relationship == RelationCache
@@ -1117,7 +1117,7 @@ hwloc_look_windows(struct hwloc_backend *backend, struct hwloc_disc_status *dsta
 
 	obj = hwloc_alloc_setup_object(topology, type, id);
         obj->cpuset = hwloc_bitmap_alloc();
-        for (i = 0; i < num; i++) {
+        for (i = 0; i < num; ++i) {
           hwloc_debug("%s#%u %d: mask %d:%lx\n", hwloc_obj_type_string(type), id, i, GroupMask[i].Group, GroupMask[i].Mask);
 	  /* GROUP_AFFINITY.Mask is KAFFINITY, which is ULONG_PTR */
 	  hwloc_bitmap_set_ith_ULONG_PTR(obj->cpuset, GroupMask[i].Group, GroupMask[i].Mask);

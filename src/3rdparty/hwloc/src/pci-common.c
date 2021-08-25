@@ -162,7 +162,7 @@ hwloc_pci_discovery_exit(struct hwloc_topology *topology)
   struct hwloc_pci_locality_s *cur;
   unsigned i;
 
-  for(i=0; i<topology->pci_forced_locality_nr; i++)
+  for(i=0; i<topology->pci_forced_locality_nr; ++i)
     hwloc_bitmap_free(topology->pci_forced_locality[i].cpuset);
   free(topology->pci_forced_locality);
 
@@ -462,7 +462,7 @@ hwloc__pci_find_busid_parent(struct hwloc_topology *topology, struct hwloc_pcide
 
   /* try to match a forced locality */
   if (topology->pci_has_forced_locality) {
-    for(i=0; i<topology->pci_forced_locality_nr; i++) {
+    for(i=0; i<topology->pci_forced_locality_nr; ++i) {
       if (busid->domain == topology->pci_forced_locality[i].domain
 	  && busid->bus >= topology->pci_forced_locality[i].bus_first
 	  && busid->bus <= topology->pci_forced_locality[i].bus_last) {

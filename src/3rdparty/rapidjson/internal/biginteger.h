@@ -70,7 +70,7 @@ public:
     BigInteger& operator+=(uint64_t u) {
         Type backup = digits_[0];
         digits_[0] += u;
-        for (size_t i = 0; i < count_ - 1; i++) {
+        for (size_t i = 0; i < count_ - 1; ++i) {
             if (digits_[i] >= backup)
                 return *this; // no carry
             backup = digits_[i + 1];
@@ -90,7 +90,7 @@ public:
         if (*this == 1) return *this = u;
 
         uint64_t k = 0;
-        for (size_t i = 0; i < count_; i++) {
+        for (size_t i = 0; i < count_; ++i) {
             uint64_t hi;
             digits_[i] = MulAdd64(digits_[i], u, k, &hi);
             k = hi;
@@ -108,7 +108,7 @@ public:
         if (*this == 1) return *this = u;
 
         uint64_t k = 0;
-        for (size_t i = 0; i < count_; i++) {
+        for (size_t i = 0; i < count_; ++i) {
             const uint64_t c = digits_[i] >> 32;
             const uint64_t d = digits_[i] & 0xFFFFFFFF;
             const uint64_t uc = u * c;
@@ -192,7 +192,7 @@ public:
         else         { a = this; b = &rhs; ret = false; }
 
         Type borrow = 0;
-        for (size_t i = 0; i < a->count_; i++) {
+        for (size_t i = 0; i < a->count_; ++i) {
             Type d = a->digits_[i] - borrow;
             if (i < b->count_)
                 d -= b->digits_[i];
@@ -270,7 +270,7 @@ private:
 
         lo += k;
         if (lo < k)
-            hi++;
+            h++i;
         *outHigh = hi;
         return lo;
 #endif

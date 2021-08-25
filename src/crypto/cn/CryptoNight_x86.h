@@ -304,7 +304,7 @@ static inline void cn_explode_scratchpad(const __m128i *input, __m128i *output)
     xin7 = _mm_load_si128(input + 11);
 
     if (props.isHeavy()) {
-        for (size_t i = 0; i < 16; i++) {
+        for (size_t i = 0; i < 16; ++i) {
             aes_round<SOFT_AES>(k0, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
             aes_round<SOFT_AES>(k1, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
             aes_round<SOFT_AES>(k2, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
@@ -448,7 +448,7 @@ static inline void cn_implode_scratchpad(const __m128i *input, __m128i *output)
             mix_and_propagate(xout0, xout1, xout2, xout3, xout4, xout5, xout6, xout7);
         }
 
-        for (size_t i = 0; i < 16; i++) {
+        for (size_t i = 0; i < 16; ++i) {
             aes_round<SOFT_AES>(k0, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
             aes_round<SOFT_AES>(k1, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
             aes_round<SOFT_AES>(k2, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
@@ -627,7 +627,7 @@ inline void cryptonight_single_hash(const uint8_t *__restrict__ input, size_t si
         RESTORE_ROUNDING_MODE();
     }
 
-    for (size_t i = 0; i < props.iterations(); i++) {
+    for (size_t i = 0; i < props.iterations(); ++i) {
         __m128i cx;
         if (IS_CN_HEAVY_TUBE || !SOFT_AES) {
             cx = _mm_load_si128(reinterpret_cast<const __m128i *>(&l0[interleaved_index<interleave>(idx0 & MASK)]));
@@ -1052,7 +1052,7 @@ inline void cryptonight_double_hash(const uint8_t *__restrict__ input, size_t si
     uint64_t idx0 = al0;
     uint64_t idx1 = al1;
 
-    for (size_t i = 0; i < props.iterations(); i++) {
+    for (size_t i = 0; i < props.iterations(); ++i) {
         __m128i cx0, cx1;
         if (IS_CN_HEAVY_TUBE || !SOFT_AES) {
             cx0 = _mm_load_si128(reinterpret_cast<const __m128i *>(&l0[idx0 & MASK]));
@@ -1369,7 +1369,7 @@ inline void cryptonight_triple_hash(const uint8_t *__restrict__ input, size_t si
         return;
     }
 
-    for (size_t i = 0; i < 3; i++) {
+    for (size_t i = 0; i < 3; ++i) {
         keccak(input + size * i, size, ctx[i]->state);
         cn_explode_scratchpad<ALGO, SOFT_AES, 0>(reinterpret_cast<const __m128i*>(ctx[i]->state), reinterpret_cast<__m128i*>(ctx[i]->memory));
     }
@@ -1394,7 +1394,7 @@ inline void cryptonight_triple_hash(const uint8_t *__restrict__ input, size_t si
     idx1 = _mm_cvtsi128_si64(ax1);
     idx2 = _mm_cvtsi128_si64(ax2);
 
-    for (size_t i = 0; i < props.iterations(); i++) {
+    for (size_t i = 0; i < props.iterations(); ++i) {
         uint64_t hi, lo;
         __m128i *ptr0, *ptr1, *ptr2;
 
@@ -1415,7 +1415,7 @@ inline void cryptonight_triple_hash(const uint8_t *__restrict__ input, size_t si
         CN_STEP4(2, ax2, bx20, bx21, cx2, l2, mc2, ptr2, idx2);
     }
 
-    for (size_t i = 0; i < 3; i++) {
+    for (size_t i = 0; i < 3; ++i) {
         cn_implode_scratchpad<ALGO, SOFT_AES, 0>(reinterpret_cast<const __m128i*>(ctx[i]->memory), reinterpret_cast<__m128i*>(ctx[i]->state));
         keccakf(reinterpret_cast<uint64_t*>(ctx[i]->state), 24);
         extra_hashes[ctx[i]->state[0] & 3](ctx[i]->state, 200, output + 32 * i);
@@ -1443,7 +1443,7 @@ inline void cryptonight_quad_hash(const uint8_t *__restrict__ input, size_t size
         return;
     }
 
-    for (size_t i = 0; i < 4; i++) {
+    for (size_t i = 0; i < 4; ++i) {
         keccak(input + size * i, size, ctx[i]->state);
         cn_explode_scratchpad<ALGO, SOFT_AES, 0>(reinterpret_cast<const __m128i*>(ctx[i]->state), reinterpret_cast<__m128i*>(ctx[i]->memory));
     }
@@ -1472,7 +1472,7 @@ inline void cryptonight_quad_hash(const uint8_t *__restrict__ input, size_t size
     idx2 = _mm_cvtsi128_si64(ax2);
     idx3 = _mm_cvtsi128_si64(ax3);
 
-    for (size_t i = 0; i < props.iterations(); i++) {
+    for (size_t i = 0; i < props.iterations(); ++i) {
         uint64_t hi, lo;
         __m128i *ptr0, *ptr1, *ptr2, *ptr3;
 
@@ -1497,7 +1497,7 @@ inline void cryptonight_quad_hash(const uint8_t *__restrict__ input, size_t size
         CN_STEP4(3, ax3, bx30, bx31, cx3, l3, mc3, ptr3, idx3);
     }
 
-    for (size_t i = 0; i < 4; i++) {
+    for (size_t i = 0; i < 4; ++i) {
         cn_implode_scratchpad<ALGO, SOFT_AES, 0>(reinterpret_cast<const __m128i*>(ctx[i]->memory), reinterpret_cast<__m128i*>(ctx[i]->state));
         keccakf(reinterpret_cast<uint64_t*>(ctx[i]->state), 24);
         extra_hashes[ctx[i]->state[0] & 3](ctx[i]->state, 200, output + 32 * i);
@@ -1525,7 +1525,7 @@ inline void cryptonight_penta_hash(const uint8_t *__restrict__ input, size_t siz
         return;
     }
 
-    for (size_t i = 0; i < 5; i++) {
+    for (size_t i = 0; i < 5; ++i) {
         keccak(input + size * i, size, ctx[i]->state);
         cn_explode_scratchpad<ALGO, SOFT_AES, 0>(reinterpret_cast<const __m128i*>(ctx[i]->state), reinterpret_cast<__m128i*>(ctx[i]->memory));
     }
@@ -1558,7 +1558,7 @@ inline void cryptonight_penta_hash(const uint8_t *__restrict__ input, size_t siz
     idx3 = _mm_cvtsi128_si64(ax3);
     idx4 = _mm_cvtsi128_si64(ax4);
 
-    for (size_t i = 0; i < props.iterations(); i++) {
+    for (size_t i = 0; i < props.iterations(); ++i) {
         uint64_t hi, lo;
         __m128i *ptr0, *ptr1, *ptr2, *ptr3, *ptr4;
 
@@ -1587,7 +1587,7 @@ inline void cryptonight_penta_hash(const uint8_t *__restrict__ input, size_t siz
         CN_STEP4(4, ax4, bx40, bx41, cx4, l4, mc4, ptr4, idx4);
     }
 
-    for (size_t i = 0; i < 5; i++) {
+    for (size_t i = 0; i < 5; ++i) {
         cn_implode_scratchpad<ALGO, SOFT_AES, 0>(reinterpret_cast<const __m128i*>(ctx[i]->memory), reinterpret_cast<__m128i*>(ctx[i]->state));
         keccakf(reinterpret_cast<uint64_t*>(ctx[i]->state), 24);
         extra_hashes[ctx[i]->state[0] & 3](ctx[i]->state, 200, output + 32 * i);

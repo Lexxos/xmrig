@@ -592,7 +592,7 @@ inline bool Writer<StringBuffer>::ScanWriteUnescapedString(StringStream& is, siz
             return RAPIDJSON_LIKELY(is.Tell() < length);
         }
         else
-            os_->PutUnsafe(*p++);
+            os_->PutUnsafe(*++p);
 
     // The rest of string using SIMD
     static const char dquote[16] = { '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"' };
@@ -619,7 +619,7 @@ inline bool Writer<StringBuffer>::ScanWriteUnescapedString(StringStream& is, siz
             len = static_cast<SizeType>(__builtin_ffs(r) - 1);
 #endif
             char* q = reinterpret_cast<char*>(os_->PushUnsafe(len));
-            for (size_t i = 0; i < len; i++)
+            for (size_t i = 0; i < len; ++i)
                 q[i] = p[i];
 
             p += len;
@@ -653,7 +653,7 @@ inline bool Writer<StringBuffer>::ScanWriteUnescapedString(StringStream& is, siz
             return RAPIDJSON_LIKELY(is.Tell() < length);
         }
         else
-            os_->PutUnsafe(*p++);
+            os_->PutUnsafe(*++p);
 
     // The rest of string using SIMD
     const uint8x16_t s0 = vmovq_n_u8('"');
@@ -687,7 +687,7 @@ inline bool Writer<StringBuffer>::ScanWriteUnescapedString(StringStream& is, siz
         }
         if (RAPIDJSON_UNLIKELY(escaped)) {   // some of characters is escaped
             char* q = reinterpret_cast<char*>(os_->PushUnsafe(len));
-            for (size_t i = 0; i < len; i++)
+            for (size_t i = 0; i < len; ++i)
                 q[i] = p[i];
 
             p += len;

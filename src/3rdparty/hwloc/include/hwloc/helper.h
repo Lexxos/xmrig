@@ -799,7 +799,7 @@ hwloc_get_obj_below_array_by_type (hwloc_topology_t topology, int nr, hwloc_obj_
 {
   hwloc_obj_t obj = hwloc_get_root_obj(topology);
   int i;
-  for(i=0; i<nr; i++) {
+  for(i=0; i<nr; ++i) {
     if (!obj)
       return NULL;
     obj = hwloc_get_obj_inside_cpuset_by_type(topology, obj->cpuset, typev[i], idxv[i]);
@@ -865,10 +865,10 @@ hwloc_distrib(hwloc_topology_t topology,
   }
 
   tot_weight = 0;
-  for (i = 0; i < n_roots; i++)
+  for (i = 0; i < n_roots; ++i)
     tot_weight += (unsigned) hwloc_bitmap_weight(roots[i]->cpuset);
 
-  for (i = 0, given = 0, givenweight = 0; i < n_roots; i++) {
+  for (i = 0, given = 0, givenweight = 0; i < n_roots; ++i) {
     unsigned chunk, weight;
     hwloc_obj_t root = roots[flags & HWLOC_DISTRIB_FLAG_REVERSE ? n_roots-1-i : i];
     hwloc_cpuset_t cpuset = root->cpuset;

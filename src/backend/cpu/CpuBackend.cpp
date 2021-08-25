@@ -324,7 +324,7 @@ void xmrig::CpuBackend::printHashrate(bool details)
                     Hashrate::format(hashrate()->calc(i, Hashrate::LargeInterval),  num + 8 * 2, sizeof num / 3)
                     );
 
-         i++;
+         ++i;
     }
 
     Log::print(WHITE_BOLD_S "|        - |        - | %7s | %7s | %7s |",
@@ -456,7 +456,7 @@ rapidjson::Value xmrig::CpuBackend::toJSON(rapidjson::Document &doc) const
         thread.AddMember("av",          data.av(), allocator);
         thread.AddMember("hashrate",    hashrate()->toJSON(i, doc), allocator);
 
-        i++;
+        ++i;
         threads.PushBack(thread, allocator);
     }
 

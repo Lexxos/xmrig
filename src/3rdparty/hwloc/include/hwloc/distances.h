@@ -184,7 +184,7 @@ static __hwloc_inline int
 hwloc_distances_obj_index(struct hwloc_distances_s *distances, hwloc_obj_t obj)
 {
   unsigned i;
-  for(i=0; i<distances->nbobjs; i++)
+  for(i=0; i<distances->nbobjs; ++i)
     if (distances->objs[i] == obj)
       return (int)i;
   return -1;

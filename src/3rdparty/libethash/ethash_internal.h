@@ -52,7 +52,7 @@ static inline bool ethash_check_difficulty(
 )
 {
 	// Boundary is big endian
-	for (int i = 0; i < 32; i++) {
+	for (int i = 0; i < 32; ++i) {
 		if (ethash_h256_get(hash, i) == ethash_h256_get(boundary, i)) {
 			continue;
 		}

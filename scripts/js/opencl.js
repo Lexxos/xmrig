@@ -9,7 +9,7 @@ function bin2h(buf, namespace, name)
     let out    = `#pragma once\n\nnamespace ${namespace} {\n\nstatic const unsigned char ${name}[${size}] = {\n    `;
 
     let b = 32;
-    for (let i = 0; i < size; i++) {
+    for (let i = 0; i < size; ++i) {
         out += `0x${buf.readUInt8(i).toString(16).padStart(2, '0')}${size - i > 1 ? ',' : ''}`;
 
         if (--b === 0) {
@@ -31,7 +31,7 @@ function text2h_internal(text, name)
     let out    = `\nstatic const char ${name}[${size + 1}] = {\n    `;
 
     let b = 32;
-    for (let i = 0; i < size; i++) {
+    for (let i = 0; i < size; ++i) {
         out += `0x${buf.readUInt8(i).toString(16).padStart(2, '0')},`;
 
         if (--b === 0) {

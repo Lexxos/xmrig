@@ -50,7 +50,7 @@ static uint64_t benchmark_impl(const argon2_impl *impl) {
     /* OK, now measure: */
     const uint64_t time = uv_hrtime();
 
-    for (uint32_t i = 0; i < BENCH_SAMPLES; i++) {
+    for (uint32_t i = 0; i < BENCH_SAMPLES; ++i) {
         impl->fill_segment(&instance, pos);
     }
 
@@ -66,7 +66,7 @@ void argon2_select_impl()
 
     argon2_get_impl_list(&impls);
 
-    for (uint32_t i = 0; i < impls.count; i++) {
+    for (uint32_t i = 0; i < impls.count; ++i) {
         const argon2_impl *impl = &impls.entries[i];
 
         if (impl->check != NULL && !impl->check()) {
@@ -103,7 +103,7 @@ int argon2_select_impl_by_name(const char *name)
     argon2_impl_list impls;
     argon2_get_impl_list(&impls);
 
-    for (uint32_t i = 0; i < impls.count; i++) {
+    for (uint32_t i = 0; i < impls.count; ++i) {
         const argon2_impl *impl = &impls.entries[i];
 
         if (strcasecmp(impl->name, name) == 0) {

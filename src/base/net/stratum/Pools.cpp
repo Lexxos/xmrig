@@ -181,7 +181,7 @@ void xmrig::Pools::print() const
     for (const Pool &pool : m_data) {
         Log::print(GREEN_BOLD(" * ") WHITE_BOLD("POOL #%-7zu") "%s", i, pool.printableName().c_str());
 
-        i++;
+        ++i;
     }
 
 #   ifdef APP_DEBUG

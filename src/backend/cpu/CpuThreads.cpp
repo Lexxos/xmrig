@@ -64,7 +64,7 @@ static inline int64_t getAffinity(uint64_t index, int64_t affinity)
 
     size_t idx = 0;
 
-    for (size_t i = 0; i < 64; i++) {
+    for (size_t i = 0; i < 64; ++i) {
         if (!(static_cast<uint64_t>(affinity) & (1ULL << i))) {
             continue;
         }

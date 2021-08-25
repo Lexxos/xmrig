@@ -301,10 +301,10 @@ hwloc_internal_distances__add(hwloc_topology_t topology, const char *name,
     if (!dist->indexes)
       goto err_with_dist;
     if (HWLOC_DIST_TYPE_USE_OS_INDEX(dist->unique_type)) {
-      for(i=0; i<nbobjs; i++)
+      for(i=0; i<nbobjs; ++i)
 	dist->indexes[i] = objs[i]->os_index;
     } else {
-      for(i=0; i<nbobjs; i++)
+      for(i=0; i<nbobjs; ++i)
 	dist->indexes[i] = objs[i]->gp_index;
     }
   }
@@ -382,7 +382,7 @@ int hwloc_internal_distances_add(hwloc_topology_t topology, const char *name,
   }
 
   /* is there any NULL object? (useful in case of problem during insert in backends) */
-  for(i=0; i<nbobjs; i++)
+  for(i=0; i<nbobjs; ++i)
     if (!objs[i])
       disappeared++;
   if (disappeared) {
@@ -399,7 +399,7 @@ int hwloc_internal_distances_add(hwloc_topology_t topology, const char *name,
   }
 
   unique_type = objs[0]->type;
-  for(i=1; i<nbobjs; i++)
+  for(i=1; i<nbobjs; ++i)
     if (objs[i]->type != unique_type) {
       unique_type = HWLOC_OBJ_TYPE_NONE;
       break;
@@ -409,7 +409,7 @@ int hwloc_internal_distances_add(hwloc_topology_t topology, const char *name,
     different_types = malloc(nbobjs * sizeof(*different_types));
     if (!different_types)
       goto err;
-    for(i=0; i<nbobjs; i++)
+    for(i=0; i<nbobjs; ++i)
       different_types[i] = objs[i]->type;
 
   } else {
@@ -438,7 +438,7 @@ int hwloc_internal_distances_add(hwloc_topology_t topology, const char *name,
       for(j=0; j<nbobjs; j++)
 	fprintf(stderr, " % 5d", (int)(gp ? objs[j]->gp_index : objs[j]->os_index));
       fprintf(stderr, "\n");
-      for(i=0; i<nbobjs; i++) {
+      for(i=0; i<nbobjs; ++i) {
 	fprintf(stderr, "  % 5d", (int)(gp ? objs[i]->gp_index : objs[i]->os_index));
 	for(j=0; j<nbobjs; j++)
 	  fprintf(stderr, " % 5lld", (long long) values[i*nbobjs + j]);
@@ -492,7 +492,7 @@ int hwloc_distances_add(hwloc_topology_t topology,
 
   /* no strict need to check for duplicates, things shouldn't break */
 
-  for(i=1; i<nbobjs; i++)
+  for(i=1; i<nbobjs; ++i)
     if (!objs[i]) {
       errno = EINVAL;
       return -1;
@@ -535,22 +535,22 @@ hwloc_internal_distances_restrict(hwloc_obj_t *objs,
   unsigned i, newi;
   unsigned j, newj;
 
-  for(i=0, newi=0; i<nbobjs; i++)
+  for(i=0, newi=0; i<nbobjs; ++i)
     if (objs[i]) {
       for(j=0, newj=0; j<nbobjs; j++)
 	if (objs[j]) {
 	  values[newi*(nbobjs-disappeared)+newj] = values[i*nbobjs+j];
 	  newj++;
 	}
-      newi++;
+      new++i;
     }
 
-  for(i=0, newi=0; i<nbobjs; i++)
+  for(i=0, newi=0; i<nbobjs; ++i)
     if (objs[i]) {
       objs[newi] = objs[i];
       if (indexes)
 	indexes[newi] = indexes[i];
-      newi++;
+      new++i;
     }
 }
 
@@ -569,7 +569,7 @@ hwloc_internal_distances_refresh_one(hwloc_topology_t topology,
   if (dist->iflags & HWLOC_INTERNAL_DIST_FLAG_OBJS_VALID)
     return 0;
 
-  for(i=0; i<nbobjs; i++) {
+  for(i=0; i<nbobjs; ++i) {
     hwloc_obj_t obj;
     /* TODO use cpuset/nodeset to find pus/numas from the root?
      * faster than traversing the entire level?
@@ -768,13 +768,13 @@ hwloc__distances_get(hwloc_topology_t topology,
     nr++;
   }
 
-  for(i=nr; i<*nrp; i++)
+  for(i=nr; i<*nrp; ++i)
     distancesp[i] = NULL;
   *nrp = nr;
   return 0;
 
  error:
-  for(i=0; i<nr; i++)
+  for(i=0; i<nr; ++i)
     hwloc_distances_release(topology, distancesp[i]);
   return -1;
 }
@@ -872,7 +872,7 @@ hwloc__find_groups_by_min_distance(unsigned nbobjs,
   memset(groupids, 0, nbobjs*sizeof(*groupids));
 
   /* find the minimal distance */
-  for(i=0; i<nbobjs; i++)
+  for(i=0; i<nbobjs; ++i)
     for(j=0; j<nbobjs; j++) /* check the entire matrix, it may not be perfectly symmetric depending on the accuracy */
       if (i != j && VALUE(i, j) < min_distance) /* no accuracy here, we want the real minimal */
         min_distance = VALUE(i, j);
@@ -882,7 +882,7 @@ hwloc__find_groups_by_min_distance(unsigned nbobjs,
     return 0;
 
   /* build groups of objects connected with this distance */
-  for(i=0; i<nbobjs; i++) {
+  for(i=0; i<nbobjs; ++i) {
     unsigned size;
     unsigned firstfound;
 
@@ -903,7 +903,7 @@ hwloc__find_groups_by_min_distance(unsigned nbobjs,
       unsigned newfirstfound = (unsigned)-1;
       for(j=firstfound; j<nbobjs; j++)
 	if (groupids[j] == groupid)
-	  for(k=0; k<nbobjs; k++)
+	  for(k=0; k<nbobjs; ++k)
               if (!groupids[k] && !hwloc_compare_values(VALUE(j, k), min_distance, accuracy)) {
 	      groupids[k] = groupid;
 	      size++;
@@ -944,7 +944,7 @@ static int
 hwloc__check_grouping_matrix(unsigned nbobjs, uint64_t *_values, float accuracy, int verbose)
 {
   unsigned i,j;
-  for(i=0; i<nbobjs; i++) {
+  for(i=0; i<nbobjs; ++i) {
     for(j=i+1; j<nbobjs; j++) {
       /* should be symmetric */
       if (hwloc_compare_values(VALUE(i, j), VALUE(j, i), accuracy)) {
@@ -999,7 +999,7 @@ hwloc__groups_by_distances(struct hwloc_topology *topology,
   if (!groupids)
     return;
 
-  for(i=0; i<nbaccuracies; i++) {
+  for(i=0; i<nbaccuracies; ++i) {
     if (verbose)
       fprintf(stderr, "Trying to group %u %s objects according to physical distances with accuracy %f\n",
 	      nbobjs, hwloc_obj_type_string(objs[0]->type), accuracies[i]);
@@ -1020,7 +1020,7 @@ hwloc__groups_by_distances(struct hwloc_topology *topology,
 
       /* create new Group objects and record their size */
       memset(&(groupsizes[0]), 0, sizeof(groupsizes[0]) * nbgroups);
-      for(i=0; i<nbgroups; i++) {
+      for(i=0; i<nbgroups; ++i) {
           /* create the Group object */
           hwloc_obj_t group_obj, res_obj;
           group_obj = hwloc_alloc_setup_object(topology, HWLOC_OBJ_GROUP, HWLOC_UNKNOWN_INDEX);
@@ -1054,12 +1054,12 @@ hwloc__groups_by_distances(struct hwloc_topology *topology,
 #undef VALUE
 #define VALUE(i, j) _values[(i) * nbobjs + (j)]
 #define GROUP_VALUE(i, j) groupvalues[(i) * nbgroups + (j)]
-      for(i=0; i<nbobjs; i++)
+      for(i=0; i<nbobjs; ++i)
 	if (groupids[i])
 	  for(j=0; j<nbobjs; j++)
 	    if (groupids[j])
                 GROUP_VALUE(groupids[i]-1, groupids[j]-1) += VALUE(i, j);
-      for(i=0; i<nbgroups; i++)
+      for(i=0; i<nbgroups; ++i)
           for(j=0; j<nbgroups; j++) {
               unsigned groupsize = groupsizes[i]*groupsizes[j];
               GROUP_VALUE(i, j) /= groupsize;
@@ -1070,7 +1070,7 @@ hwloc__groups_by_distances(struct hwloc_topology *topology,
       for(j=0; j<nbgroups; j++)
 	hwloc_debug(" % 5d", (int) j); /* print index because os_index is -1 for Groups */
       hwloc_debug("%s", "\n");
-      for(i=0; i<nbgroups; i++) {
+      for(i=0; i<nbgroups; ++i) {
 	hwloc_debug("  % 5d", (int) i);
 	for(j=0; j<nbgroups; j++)
 	  hwloc_debug(" %llu", (unsigned long long) GROUP_VALUE(i, j));

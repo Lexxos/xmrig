@@ -246,7 +246,7 @@ private:
         int mix_seq_dst_cnt = 0;
         int mix_seq_cache_cnt = 0;
 
-        for (uint32_t i = 0; i < KPHash::REGS; i++) {
+        for (uint32_t i = 0; i < KPHash::REGS; ++i) {
             mix_seq_dst[i] = i;
             mix_seq_cache[i] = i;
         }
@@ -294,7 +294,7 @@ private:
         ret << merge("mix[0]", "data_dag.s[0]", rnd());
 
         constexpr size_t num_words_per_lane = 256 / (sizeof(uint32_t) * KPHash::LANES);
-        for (size_t i = 1; i < num_words_per_lane; i++)
+        for (size_t i = 1; i < num_words_per_lane; ++i)
         {
             std::string dest = mix_dst();
             uint32_t    r = rnd();
